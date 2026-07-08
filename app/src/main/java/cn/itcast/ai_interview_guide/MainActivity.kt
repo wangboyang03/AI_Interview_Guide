@@ -4,13 +4,19 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
+import cn.itcast.ai_interview_guide.components.LoadingPopup
 import cn.itcast.ai_interview_guide.components.SearchBar
 import cn.itcast.ai_interview_guide.ui.theme.AI_Interview_GuideTheme
 
@@ -20,7 +26,9 @@ class MainActivity : ComponentActivity() {
     enableEdgeToEdge()
     setContent {
       AI_Interview_GuideTheme {
-        SearchBar("东京高频面试题")
+        Box(Modifier.fillMaxSize().background(Color(0xFF000000).copy(0.3f)), contentAlignment = Alignment.Center) {
+          LoadingPopup("正在加载中")
+        }
       }
     }
   }

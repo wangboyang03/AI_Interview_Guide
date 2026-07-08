@@ -11,6 +11,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import cn.itcast.ai_interview_guide.components.SearchBar
 import cn.itcast.ai_interview_guide.ui.theme.AI_Interview_GuideTheme
 
 class MainActivity : ComponentActivity() {
@@ -19,12 +20,7 @@ class MainActivity : ComponentActivity() {
     enableEdgeToEdge()
     setContent {
       AI_Interview_GuideTheme {
-        Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-          Greeting(
-            name = "Android",
-            modifier = Modifier.padding(innerPadding)
-          )
-        }
+        SearchBar("东京高频面试题")
       }
     }
   }

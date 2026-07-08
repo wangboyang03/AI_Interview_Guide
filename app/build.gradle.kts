@@ -6,7 +6,7 @@ plugins {
 android {
   namespace = "cn.itcast.ai_interview_guide"
   compileSdk {
-    version = release(36) {
+    version = release(37) {
       minorApiLevel = 1
     }
   }
@@ -53,4 +53,6 @@ dependencies {
   androidTestImplementation(libs.androidx.junit)
   debugImplementation(libs.androidx.compose.ui.test.manifest)
   debugImplementation(libs.androidx.compose.ui.tooling)
+  /** material3图标库 **/
+  implementation(libs.androidx.compose.material.icons.core)
 }

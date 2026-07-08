@@ -16,7 +16,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
+import cn.itcast.ai_interview_guide.components.CheckIn
 import cn.itcast.ai_interview_guide.components.LoadingPopup
+import cn.itcast.ai_interview_guide.components.NavigationBar
 import cn.itcast.ai_interview_guide.components.SearchBar
 import cn.itcast.ai_interview_guide.ui.theme.AI_Interview_GuideTheme
 
@@ -26,9 +28,7 @@ class MainActivity : ComponentActivity() {
     enableEdgeToEdge()
     setContent {
       AI_Interview_GuideTheme {
-        Box(Modifier.fillMaxSize().background(Color(0xFF000000).copy(0.3f)), contentAlignment = Alignment.Center) {
-          LoadingPopup("正在加载中")
-        }
+        NavigationBar("导航栏样式", showLeftIcon = true, customTitle = { CheckIn(10) })
       }
     }
   }

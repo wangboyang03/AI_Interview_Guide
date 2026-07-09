@@ -55,4 +55,5 @@ dependencies {
   debugImplementation(libs.androidx.compose.ui.tooling)
   /** material3图标库 **/
   implementation(libs.androidx.compose.material.icons.core)
+  implementation(libs.androidx.compose.material.icons.extended)
 }

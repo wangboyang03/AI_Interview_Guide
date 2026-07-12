@@ -17,7 +17,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
-@Composable fun LoadingPopup(message: String) {
+@Composable fun LoadingPopup(message: String = "") {
   Column(Modifier.size(120.dp).clip(RoundedCornerShape(16.dp)).background(Color(0xFF000000).copy(0.6f)), Arrangement.Center, Alignment.CenterHorizontally) {
     // Loading动画
     CircularProgressIndicator(Modifier.size(48.dp), Color(0xFFFFFFFF))

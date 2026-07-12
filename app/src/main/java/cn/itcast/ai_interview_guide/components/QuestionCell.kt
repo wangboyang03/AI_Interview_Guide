@@ -10,13 +10,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-
-data class QuestionItem(
-  val id: String,
-  val stem: String,        // 题目标题
-  val difficulty: Int,     // 难度 1-5
-  val views: Int           // 浏览量
-)
+import cn.itcast.ai_interview_guide.models.QuestionItem
 
 @Composable fun QuestionCell(item: QuestionItem) {
   Column(Modifier.fillMaxSize().padding(horizontal = 16.dp, vertical = 12.dp)) {

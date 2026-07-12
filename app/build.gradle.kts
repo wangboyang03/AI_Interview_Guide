@@ -58,4 +58,6 @@ dependencies {
   implementation(libs.androidx.compose.material.icons.extended)
   /** Navigation **/
   implementation(libs.androidx.navigation.compose)
+  /** MVVM **/
+  implementation(libs.androidx.lifecycle.viewmodel.compose)
 }

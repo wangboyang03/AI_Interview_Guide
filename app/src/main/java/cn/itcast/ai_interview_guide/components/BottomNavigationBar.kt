@@ -19,7 +19,7 @@ import cn.itcast.ai_interview_guide.models.TabItemResponse
   )
   NavigationBar {
     tabDataList.forEach {
-      item -> NavigationBarItem(currentRoute == item.routeName, { onTabChange(item.routeName) }, { Image(painterResource(if (currentRoute == item.routeName) item.activatedIcon else item.normalIcon), null)}, label = { Text(item.name, fontSize = 10.sp) })
+      item -> NavigationBarItem(currentRoute == item.routeName, { onTabChange(item.routeName) }, { Image(painterResource(if (currentRoute == item.routeName) item.activatedIcon else item.normalIcon), null)}, label = { Text(item.name, fontSize = 12.sp) })
     }
   }
 }

@@ -1,6 +1,7 @@
 plugins {
   alias(libs.plugins.android.application)
   alias(libs.plugins.kotlin.compose)
+  id("org.jetbrains.kotlin.plugin.serialization") version "2.4.0"
 }
 
 android {
@@ -60,4 +61,12 @@ dependencies {
   implementation(libs.androidx.navigation.compose)
   /** MVVM **/
   implementation(libs.androidx.lifecycle.viewmodel.compose)
+  /** 网络请求相关 **/
+  implementation(libs.retrofit)
+  implementation(libs.converter.kotlinx.serialization)
+
+  implementation(libs.okhttp)
+  implementation(libs.logging.interceptor)
+
+  implementation(libs.kotlinx.serialization.json)
 }

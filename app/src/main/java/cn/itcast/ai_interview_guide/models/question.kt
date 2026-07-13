@@ -1,5 +1,6 @@
 package cn.itcast.ai_interview_guide.models
 
+import androidx.compose.ui.graphics.Color
 import kotlinx.serialization.Serializable
 
 /**
@@ -55,4 +56,22 @@ enum class PlanSceneName(val value: String) {
       else   -> throw IllegalArgumentException()
     }
   }
+}
+
+/**
+ * 试题标签对象
+ */
+data class TagInformation(
+  val text: String,
+  val color: Color
+)
+
+object TagConfig {
+  val AllTagInformation = mapOf(
+    1 to TagInformation("简单", Color(0xFF41B883)),
+    2 to TagInformation("简单", Color(0xFF41B883)),
+    3 to TagInformation("一般", Color(0xFF3266EE)),
+    4 to TagInformation("一般", Color(0xFF3266EE)),
+    5 to TagInformation("困难", Color(0xFFFA6D1D))
+  )
 }

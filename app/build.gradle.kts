@@ -53,4 +53,27 @@ dependencies {
   androidTestImplementation(libs.androidx.junit)
   debugImplementation(libs.androidx.compose.ui.test.manifest)
   debugImplementation(libs.androidx.compose.ui.tooling)
+  /** material3图标库 **/
+  implementation(libs.material.icons.extended)
+
+  /** Navigation **/
+  implementation(libs.navigation.compose)
+
+  /** MVVM **/
+  // implementation(libs.androidx.lifecycle.viewmodel.compose)
+
+  /** 网络请求相关 **/
+  implementation(libs.retrofit)
+  implementation(libs.retrofit.kotlinx.serialization)
+  implementation(libs.okhttp)
+  implementation(libs.okhttp.logging)
+  implementation(libs.kotlinx.serialization.json)
+
+  /** 持久化存储 **/
+  implementation(libs.datastore.preferences)
+
+  /** Room **/
+  implementation(libs.room.runtime)
+  implementation(libs.room.ktx)
+  // ksp(libs.room.compiler)
 }

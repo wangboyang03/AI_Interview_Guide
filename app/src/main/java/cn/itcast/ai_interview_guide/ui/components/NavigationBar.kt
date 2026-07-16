@@ -1,4 +1,4 @@
-package cn.itcast.ai_interview_guide.components
+package cn.itcast.ai_interview_guide.ui.components
 
 import android.R.attr.label
 import androidx.compose.foundation.Image

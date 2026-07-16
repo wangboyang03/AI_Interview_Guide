@@ -1,4 +1,4 @@
-package cn.itcast.ai_interview_guide.components
+package cn.itcast.ai_interview_guide.ui.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Row
@@ -11,6 +11,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import cn.itcast.ai_interview_guide.models.Rows
 import cn.itcast.ai_interview_guide.models.TagConfig
+import kotlin.collections.get
 
 /**
  * 试题列表标签组件

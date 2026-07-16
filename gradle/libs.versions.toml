@@ -2,6 +2,7 @@
 agp = "9.2.1"
 converterKotlinxSerialization = "3.0.0"
 coreKtx = "1.19.0"
+datastorePreferences = "1.1.1"
 junit = "4.13.2"
 junitVersion = "1.3.0"
 espressoCore = "3.7.0"
@@ -16,11 +17,17 @@ materialIconsExtended = "1.7.8"
 navigationCompose = "2.8.5"
 okhttp = "5.4.0"
 retrofit = "3.0.0"
+# Room 持久化库的版本 (官方 ORM 框架)
+room = "2.7.1"
+# KSP (Kotlin Symbol Processing) 插件的版本
+# 用于在编译时处理注解，生成代码（如 Room 的查询验证）
+ksp = "2.3.6"
 
 [libraries]
 androidx-compose-material-icons-core = { module = "androidx.compose.material:material-icons-core" }
 androidx-compose-material-icons-extended = { module = "androidx.compose.material:material-icons-extended", version.ref = "materialIconsExtended" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastorePreferences" }
 androidx-lifecycle-viewmodel-compose = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "lifecycleViewmodelCompose" }
 androidx-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
 converter-kotlinx-serialization = { module = "com.squareup.retrofit2:converter-kotlinx-serialization", version.ref = "converterKotlinxSerialization" }
@@ -41,8 +48,17 @@ kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serializa
 logging-interceptor = { module = "com.squareup.okhttp3:logging-interceptor", version.ref = "loggingInterceptor" }
 okhttp = { module = "com.squareup.okhttp3:okhttp", version.ref = "okhttp" }
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
+# Room 运行时库 - 包含 Room 的核心 API 和数据库操作支持
+room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
+# Room 编译时注解处理器 - 用于在编译期生成数据库实现代码
+# 必须与 KSP 插件配合使用（取代传统的 kapt）
+room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
+# Room 的 Kotlin 扩展库 - 提供协程支持 (Flow, suspend 函数等)
+room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
-
+# KSP 插件 - 用于替代 kapt，提供更快的 Kotlin 注解处理能力
+# 版本号引用自上方 [versions] 中的 ksp
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }

@@ -1,4 +1,4 @@
-package cn.itcast.ai_interview_guide.components
+package cn.itcast.ai_interview_guide.ui.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.material3.NavigationBar

@@ -2,6 +2,7 @@ plugins {
   alias(libs.plugins.android.application)
   alias(libs.plugins.kotlin.compose)
   id("org.jetbrains.kotlin.plugin.serialization") version "2.4.0"
+  alias(libs.plugins.ksp)  // KSP 插件
 }
 
 android {
@@ -64,9 +65,13 @@ dependencies {
   /** 网络请求相关 **/
   implementation(libs.retrofit)
   implementation(libs.converter.kotlinx.serialization)
-
   implementation(libs.okhttp)
   implementation(libs.logging.interceptor)
-
   implementation(libs.kotlinx.serialization.json)
+  /** 持久化存储 **/
+  implementation(libs.androidx.datastore.preferences)
+  /** Room **/
+  implementation(libs.room.runtime)
+  implementation(libs.room.ktx)
+  ksp(libs.room.compiler)  // KSP 在编译时生成 DAO 实现类
 }

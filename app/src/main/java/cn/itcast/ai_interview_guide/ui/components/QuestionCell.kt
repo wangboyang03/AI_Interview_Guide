@@ -1,4 +1,4 @@
-package cn.itcast.ai_interview_guide.components
+package cn.itcast.ai_interview_guide.ui.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column

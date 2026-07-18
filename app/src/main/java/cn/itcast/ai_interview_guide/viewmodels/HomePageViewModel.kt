@@ -44,7 +44,6 @@ class HomePageViewModel(application: Application) : AndroidViewModel(application
   private var page = 1 // 当前页码 局部变量
   fun getQuestionListData() {
     viewModelScope.launch {
-      _loading.value = true
       try {
         val type = _questionCategory.value.getOrNull(_activatedIndex.value)?.id ?: return@launch
         val response = HttpClient.request {
@@ -52,6 +51,7 @@ class HomePageViewModel(application: Application) : AndroidViewModel(application
         }
         // _questionList.value = response.rows
         if (page == 1) {
+          _loading.value = true
           _questionList.value = response.rows
         } else {
           _questionList.value += response.rows
@@ -66,6 +66,8 @@ class HomePageViewModel(application: Application) : AndroidViewModel(application
         error.message
       } finally {
         _loading.value = false
+        _isLoading.value = false
+        _isRefreshing.value = false
       }
     }
   }
@@ -76,7 +78,12 @@ class HomePageViewModel(application: Application) : AndroidViewModel(application
     refreshListData()
   }
 
+  // 处理下拉刷新
+  private val _isRefreshing = MutableStateFlow(false)
+  val isRefreshing = _isRefreshing.asStateFlow()
   fun refreshListData() {
+    if (_isRefreshing.value) return
+    _isRefreshing.value = true
     page = 1
     _isFinished.value = false // 如果加载完成没有更多数据切换索引后需要重置状态
     getQuestionListData()
@@ -91,8 +98,7 @@ class HomePageViewModel(application: Application) : AndroidViewModel(application
 
   fun loadMoreListData() {
     if (_isLoading.value || _isFinished.value) return
-    _isLoading.value = true
+    _isLoading.value = true // 正在加载
     getQuestionListData()
   }
-
 }

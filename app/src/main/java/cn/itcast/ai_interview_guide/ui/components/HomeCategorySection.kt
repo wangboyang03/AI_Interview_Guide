@@ -1,11 +1,13 @@
 package cn.itcast.ai_interview_guide.ui.components
 
+import android.util.Log.v
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -14,17 +16,22 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.SecondaryScrollableTabRow
 import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -37,6 +44,7 @@ import androidx.navigation.NavController
 import cn.itcast.ai_interview_guide.R
 import cn.itcast.ai_interview_guide.ui.theme.BasicColor
 import cn.itcast.ai_interview_guide.viewmodels.HomePageViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
 
 @Composable fun HomeCategorySection(vm: HomePageViewModel, navController: NavController) {
   // 获取试题分类
@@ -45,6 +53,14 @@ import cn.itcast.ai_interview_guide.viewmodels.HomePageViewModel
   // var activatedIndex by remember { mutableIntStateOf(0) }
   val questionList = vm.questionList.collectAsState()
   val activatedIndex = vm.activatedIndex.collectAsState()
+
+  // 下拉刷新
+  // var isRefreshing by remember { mutableStateOf(false) }
+  val isRefreshing by vm.isRefreshing.collectAsState()
+  // 上拉加载
+  val lazyListState = rememberLazyListState()
+  val isFinished by vm.isFinished.collectAsState()
+  val isLoading by vm.isLoading.collectAsState()
 
   Column(Modifier.fillMaxSize()) {
     Box(Modifier.fillMaxWidth()) {
@@ -77,15 +93,43 @@ import cn.itcast.ai_interview_guide.viewmodels.HomePageViewModel
       }
     }
 
-    // 试题列表
-    LazyColumn(Modifier.fillMaxSize().background(BasicColor.White)) {
-      items(questionList.value) { item ->
-        QuestionListRow(item)
-        HorizontalDivider(
-          color = BasicColor.GrayBackground,
-          thickness = 0.5.dp,
-          modifier = Modifier.padding(horizontal = 16.dp)
-        )
+    PullToRefreshBox(isRefreshing, {
+      // 获取列表数据
+      vm.refreshListData()
+    }) {
+      // 试题列表 通过lazyListState监听列表滚动
+      LazyColumn(Modifier.fillMaxSize().background(BasicColor.White), lazyListState) {
+        items(questionList.value) { item ->
+          QuestionListRow(item)
+          HorizontalDivider(Modifier.padding(horizontal = 16.dp), 0.5.dp, BasicColor.GrayBackground)
+        }
+
+        // 底部加载状态
+        item {
+          Box(Modifier.fillMaxWidth().height(80.dp), contentAlignment = Alignment.Center) {
+            if (isFinished) {
+              Text("没有更多了~", fontSize = 14.sp, color = BasicColor.Gray03)
+            } else if (isLoading) {
+              Row(verticalAlignment = Alignment.CenterVertically) {
+                CircularProgressIndicator(Modifier.size(18.dp), strokeWidth = 2.dp)
+                Spacer(Modifier.width(5.dp))
+                Text("正在拼命加载中~", fontSize = 14.sp, color = BasicColor.Gray03)
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  LaunchedEffect(lazyListState) {
+    // 把列表状态转换成流方便实时监测
+    snapshotFlow {
+     val lastVisibleItemIndex =  lazyListState.layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: 0
+      lastVisibleItemIndex >= lazyListState.layoutInfo.totalItemsCount - 1
+    }.collect {
+      if (it) {
+        vm.loadMoreListData()
       }
     }
   }

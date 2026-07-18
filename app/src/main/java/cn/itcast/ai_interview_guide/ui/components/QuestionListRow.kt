@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.LocalTextStyle
@@ -19,16 +20,16 @@ import androidx.compose.ui.unit.sp
 import cn.itcast.ai_interview_guide.data.models.Rows
 
 @Composable fun QuestionListRow(item: Rows) {
-  Column(Modifier.fillMaxSize().padding(14.4.dp)) {
+  Column(Modifier.fillMaxSize().padding(15.dp)) {
     Row() {
       // 题目标签
       QuestionTag(item.difficulty?.toInt() ?: 0)
       Spacer(Modifier.width(5.dp))
       // 题目
-      Text(item.stem, fontSize = 14.4.sp, fontWeight = FontWeight.Medium)
+      Text(item.stem, fontSize = 15.sp, fontWeight = FontWeight.Medium)
     }
     // 浏览量
-    ProvideTextStyle(LocalTextStyle.current.copy(Color(0xFFC3C3C5), 12.sp, lineHeight = 17.28.sp)) {
+    ProvideTextStyle(LocalTextStyle.current.copy(Color(0xFFC3C3C5), 13.sp)) {
       Row(horizontalArrangement = Arrangement.spacedBy(9.6.dp)) {
         Text("点赞 ${item.likeCount.toInt()}")
         Text("|")

@@ -17,6 +17,8 @@ import androidx.compose.material3.SecondaryScrollableTabRow
 import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
@@ -28,19 +30,15 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import cn.itcast.ai_interview_guide.R
-import cn.itcast.ai_interview_guide.data.models.QuestionTypeResponse
 import cn.itcast.ai_interview_guide.ui.theme.BasicColor
+import cn.itcast.ai_interview_guide.viewmodels.HomePageViewModel
 
-@Composable fun HomeCategorySection() {
-  // 1.预留mock数据 后续调接口获取
-  val mockTypes = listOf(
-    QuestionTypeResponse(1, "ArkTS", 1),
-    QuestionTypeResponse(2, "ArkUI", 1),
-    QuestionTypeResponse(3, "鸿蒙架构", 1),
-    QuestionTypeResponse(4, "HTML5", 0),
-    QuestionTypeResponse(5, "CSS3", 0),
-  )
+@Composable fun HomeCategorySection(vm: HomePageViewModel, navController: NavController) {
+  // 获取试题分类
+  val questionCategory = vm.questionCategory.collectAsState()
   // 激活索引的状态变量
   var activatedIndex by remember { mutableIntStateOf(0) }
 
@@ -50,7 +48,7 @@ import cn.itcast.ai_interview_guide.ui.theme.BasicColor
       SecondaryScrollableTabRow(activatedIndex, Modifier.fillMaxWidth(), edgePadding = 16.dp, indicator = {}, divider = {
         HorizontalDivider(Modifier, 1.dp, BasicColor.GrayBorder)
       }) {
-        mockTypes.forEachIndexed { index, response ->
+        questionCategory.value.forEachIndexed { index, response ->
           Tab(activatedIndex == index, { activatedIndex = index }, Modifier.height(48.dp)) {
             // Text(response.name, fontSize = 15.sp, color = if (activatedIndex == index) BasicColor.Black else BasicColor.Gray01)
             Row(verticalAlignment = Alignment.CenterVertically) {

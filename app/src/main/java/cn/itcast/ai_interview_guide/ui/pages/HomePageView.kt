@@ -15,21 +15,45 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import cn.itcast.ai_interview_guide.R
 import cn.itcast.ai_interview_guide.ui.components.CheckIn
 import cn.itcast.ai_interview_guide.ui.components.HomeCategorySection
 import cn.itcast.ai_interview_guide.ui.components.SearchBox
+import cn.itcast.ai_interview_guide.ui.components.SkeletonLoader
 import cn.itcast.ai_interview_guide.ui.components.Swiper
 import cn.itcast.ai_interview_guide.ui.theme.BasicColor
+import cn.itcast.ai_interview_guide.viewmodels.HomePageViewModel
 
 @Composable fun HomePageView(navController: NavController) {
+  val homepageViewModel: HomePageViewModel = viewModel()
+  // 获取首页分类数据
+  LaunchedEffect(Unit) {
+    homepageViewModel.getQuestionCategoryData()
+  }
+  val questionCategory by homepageViewModel.questionCategory.collectAsState()
+  val activatedIndex by homepageViewModel.activatedIndex.collectAsState()
+  val questionList by homepageViewModel.questionList.collectAsState()
+  val loading by homepageViewModel.loading.collectAsState()
+
+  // 分类变化时需要加载列表
+  LaunchedEffect(activatedIndex, questionCategory.size) {
+    if (questionCategory.isNotEmpty()) {
+      // 分类列表不为空 才能请求当前分类下的列表数据
+      homepageViewModel.refreshListData()
+    }
+  }
+
   Column(Modifier.fillMaxSize()) {
     // 头部导航栏
     Row(Modifier.fillMaxWidth().statusBarsPadding().height(64.dp).background(BasicColor.HomeBackground).padding(horizontal = 16.dp), verticalAlignment = Alignment.CenterVertically) {
@@ -49,6 +73,10 @@ import cn.itcast.ai_interview_guide.ui.theme.BasicColor
     // 日历 每日一题
 
     // 首页题目分类
-    HomeCategorySection()
+    if (loading || questionCategory.isEmpty()) {
+      SkeletonLoader()
+    } else {
+      HomeCategorySection(homepageViewModel, navController)
+    }
   }
 }

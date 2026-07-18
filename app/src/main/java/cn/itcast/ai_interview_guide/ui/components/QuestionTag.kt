@@ -1,6 +1,7 @@
 package cn.itcast.ai_interview_guide.ui.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -24,5 +25,7 @@ import cn.itcast.ai_interview_guide.ui.theme.BasicColor
     5 -> "困难" to BasicColor.MainColor
     else -> label to labelColor
   }
-  Text(TagList.first, Modifier.defaultMinSize(minWidth = 34.dp).height(24.dp).clip(RoundedCornerShape(2.dp)).background(BasicColor.GrayBackground).wrapContentWidth(Alignment.CenterHorizontally).wrapContentHeight(Alignment.CenterVertically).padding(horizontal = 6.dp), fontSize = 10.sp, color = TagList.second)
+  // Text(TagList.first, Modifier.defaultMinSize(minWidth = 34.dp).height(24.dp).clip(RoundedCornerShape(2.dp)).background(BasicColor.GrayBackground).wrapContentWidth(Alignment.CenterHorizontally).wrapContentHeight(Alignment.CenterVertically).padding(horizontal = 6.dp), fontSize = 10.sp, color = TagList.second)
+  Text(TagList.first, Modifier.defaultMinSize(minWidth = 34.dp).height(24.dp).clip(RoundedCornerShape(2.dp)).background(BasicColor.TagBackground).wrapContentWidth(Alignment.CenterHorizontally).wrapContentHeight(Alignment.CenterVertically).padding(horizontal = 6.dp), fontSize = 12.sp, color = TagList.second,
+  )
 }

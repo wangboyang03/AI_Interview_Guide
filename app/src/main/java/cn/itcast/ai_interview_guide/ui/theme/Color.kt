@@ -26,4 +26,5 @@ object BasicColor {
   val HomeGray = Color(0xFFEDECF2)
   val HomeBackground = Color(0xFFF3F4F6)
   val SearchBoxBackground = Color(0xFFE7E6ED)
+  val TagBackground = Color(0xFFF6F7F9)
 }

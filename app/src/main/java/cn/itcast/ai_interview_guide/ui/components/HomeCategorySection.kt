@@ -12,6 +12,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.SecondaryScrollableTabRow
 import androidx.compose.material3.Tab
@@ -40,22 +42,24 @@ import cn.itcast.ai_interview_guide.viewmodels.HomePageViewModel
   // 获取试题分类
   val questionCategory = vm.questionCategory.collectAsState()
   // 激活索引的状态变量
-  var activatedIndex by remember { mutableIntStateOf(0) }
+  // var activatedIndex by remember { mutableIntStateOf(0) }
+  val questionList = vm.questionList.collectAsState()
+  val activatedIndex = vm.activatedIndex.collectAsState()
 
   Column(Modifier.fillMaxSize()) {
     Box(Modifier.fillMaxWidth()) {
       // 二级Tab栏
-      SecondaryScrollableTabRow(activatedIndex, Modifier.fillMaxWidth(), edgePadding = 16.dp, indicator = {}, divider = {
+      SecondaryScrollableTabRow(activatedIndex.value, Modifier.fillMaxWidth(), edgePadding = 16.dp, indicator = {}, divider = {
         HorizontalDivider(Modifier, 1.dp, BasicColor.GrayBorder)
       }) {
         questionCategory.value.forEachIndexed { index, response ->
-          Tab(activatedIndex == index, { activatedIndex = index }, Modifier.height(48.dp)) {
+          Tab(activatedIndex.value == index, { vm.getCurrentListDataFromActivatedIndex(index) }, Modifier.height(48.dp)) {
             // Text(response.name, fontSize = 15.sp, color = if (activatedIndex == index) BasicColor.Black else BasicColor.Gray01)
             Row(verticalAlignment = Alignment.CenterVertically) {
               Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                Text(response.name, fontSize = 15.sp, color = if (activatedIndex == index) BasicColor.Black else BasicColor.Gray01)
+                Text(response.name, fontSize = 15.sp, color = if (activatedIndex.value == index) BasicColor.Black else BasicColor.Gray01)
                 // 选中下划线
-                Box(Modifier.padding(top = 4.dp).then(if (activatedIndex == index) Modifier.width(20.dp).height(2.dp).background(BasicColor.Black) else Modifier.height(2.dp)))
+                Box(Modifier.padding(top = 4.dp).then(if (activatedIndex.value == index) Modifier.width(20.dp).height(2.dp).background(BasicColor.Black) else Modifier.height(2.dp)))
               }
               // 根据条件渲染标签
               if (response.displayNewestFlag == 1) {
@@ -70,6 +74,18 @@ import cn.itcast.ai_interview_guide.viewmodels.HomePageViewModel
         // 渐变背景遮罩
         Box(Modifier.fillMaxSize().background(Brush.horizontalGradient(colors = listOf(BasicColor.White.copy(.4f), BasicColor.White), startX = 0f)))
         Image(painterResource(R.drawable.ic_home_filter), null, Modifier.size(24.dp), contentScale = ContentScale.Fit)
+      }
+    }
+
+    // 试题列表
+    LazyColumn(Modifier.fillMaxSize().background(BasicColor.White)) {
+      items(questionList.value) { item ->
+        QuestionListRow(item)
+        HorizontalDivider(
+          color = BasicColor.GrayBackground,
+          thickness = 0.5.dp,
+          modifier = Modifier.padding(horizontal = 16.dp)
+        )
       }
     }
   }

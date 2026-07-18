@@ -50,7 +50,18 @@ class HomePageViewModel(application: Application) : AndroidViewModel(application
         val response = HttpClient.request {
           HttpClient.api.getQuestionListApi("$type", "10", null, null, "$page", "10")
         }
-        _questionList.value = response.rows
+        // _questionList.value = response.rows
+        if (page == 1) {
+          _questionList.value = response.rows
+        } else {
+          _questionList.value += response.rows
+        }
+        // 判断是否加载完毕
+        if (page >= response.pageTotal) {
+          _isFinished.value = true
+        } else {
+          page++
+        }
       } catch (error: Exception) {
         error.message
       } finally {
@@ -67,6 +78,20 @@ class HomePageViewModel(application: Application) : AndroidViewModel(application
 
   fun refreshListData() {
     page = 1
+    _isFinished.value = false // 如果加载完成没有更多数据切换索引后需要重置状态
+    getQuestionListData()
+  }
+
+  // 处理上拉加载
+  private val _isFinished = MutableStateFlow(false)
+  val isFinished = _isFinished.asStateFlow()
+
+  private val _isLoading = MutableStateFlow(false)
+  val isLoading = _isLoading.asStateFlow()
+
+  fun loadMoreListData() {
+    if (_isLoading.value || _isFinished.value) return
+    _isLoading.value = true
     getQuestionListData()
   }
 

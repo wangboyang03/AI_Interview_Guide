@@ -1,6 +1,5 @@
-package cn.itcast.ai_interview_guide.ui.theme
+package cn.itcast.ai_interview_guide.views.theme
 
-import android.app.Activity
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme

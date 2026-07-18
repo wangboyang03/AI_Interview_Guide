@@ -1,4 +1,4 @@
-package cn.itcast.ai_interview_guide.ui.theme
+package cn.itcast.ai_interview_guide.views.theme
 
 import androidx.compose.ui.graphics.Color
 

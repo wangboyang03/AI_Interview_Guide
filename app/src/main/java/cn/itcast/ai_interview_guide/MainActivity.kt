@@ -11,7 +11,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import cn.itcast.ai_interview_guide.ui.theme.AI_Interview_GuideTheme
+import cn.itcast.ai_interview_guide.views.theme.AI_Interview_GuideTheme
 
 class MainActivity : ComponentActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {

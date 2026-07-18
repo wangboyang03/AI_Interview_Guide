@@ -1,6 +1,8 @@
 plugins {
   alias(libs.plugins.android.application)
   alias(libs.plugins.kotlin.compose)
+  alias(libs.plugins.kotlin.serialization)
+  alias(libs.plugins.ksp)
 }
 
 android {
@@ -54,4 +56,24 @@ dependencies {
   androidTestImplementation(libs.androidx.junit)
   debugImplementation(libs.androidx.compose.ui.test.manifest)
   debugImplementation(libs.androidx.compose.ui.tooling)
+  // Navigation
+  implementation(libs.navigation.compose)
+  implementation(libs.androidx.lifecycle.viewmodel.compose)
+  // Retrofit + OkHttp
+  implementation(libs.retrofit)
+  implementation(libs.retrofit.kotlinx.serialization)
+  implementation(libs.okhttp)
+  implementation(libs.okhttp.logging)
+  // Kotlinx Serialization
+  implementation(libs.kotlinx.serialization.json)
+  // Coil 图片加载
+  implementation(libs.coil.compose)
+  // DataStore
+  implementation(libs.datastore.preferences)
+  // Room
+  implementation(libs.room.runtime)
+  implementation(libs.room.ktx)
+  ksp(libs.room.compiler)
+  // Material Icons Extended
+  implementation(libs.material.icons.extended)
 }

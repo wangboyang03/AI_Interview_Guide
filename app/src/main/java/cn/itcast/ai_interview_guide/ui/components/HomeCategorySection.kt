@@ -62,6 +62,12 @@ import kotlinx.coroutines.flow.MutableStateFlow
   val isFinished by vm.isFinished.collectAsState()
   val isLoading by vm.isLoading.collectAsState()
 
+  // 控制筛选蒙层的显示隐藏
+  var isShowBindSheet by remember { mutableStateOf(false) }
+  if (isShowBindSheet) {
+    FilterSheet({ isShowBindSheet = false })
+  }
+
   Column(Modifier.fillMaxSize()) {
     Box(Modifier.fillMaxWidth()) {
       // 二级Tab栏
@@ -86,7 +92,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
         }
       }
 
-      Box(Modifier.align(Alignment.TopEnd).size(48.dp).clickable { /* 后续实现筛选弹窗 */ }, contentAlignment = Alignment.Center) {
+      Box(Modifier.align(Alignment.TopEnd).size(48.dp).clickable { isShowBindSheet = true }, contentAlignment = Alignment.Center) {
         // 渐变背景遮罩
         Box(Modifier.fillMaxSize().background(Brush.horizontalGradient(colors = listOf(BasicColor.White.copy(.4f), BasicColor.White), startX = 0f)))
         Image(painterResource(R.drawable.ic_home_filter), null, Modifier.size(24.dp), contentScale = ContentScale.Fit)

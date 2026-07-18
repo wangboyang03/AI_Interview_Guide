@@ -40,6 +40,7 @@ android {
 dependencies {
   implementation(platform(libs.androidx.compose.bom))
   implementation(libs.androidx.activity.compose)
+  implementation(libs.androidx.compose.foundation)
   implementation(libs.androidx.compose.material3)
   implementation(libs.androidx.compose.ui)
   implementation(libs.androidx.compose.ui.graphics)
@@ -54,13 +55,14 @@ dependencies {
   debugImplementation(libs.androidx.compose.ui.test.manifest)
   debugImplementation(libs.androidx.compose.ui.tooling)
   /** material3图标库 **/
+  implementation(libs.androidx.compose.material.icons.core)
   implementation(libs.material.icons.extended)
 
   /** Navigation **/
   implementation(libs.navigation.compose)
 
   /** MVVM **/
-  // implementation(libs.androidx.lifecycle.viewmodel.compose)
+  implementation(libs.androidx.lifecycle.viewmodel.compose)
 
   /** 网络请求相关 **/
   implementation(libs.retrofit)
@@ -75,5 +77,5 @@ dependencies {
   /** Room **/
   implementation(libs.room.runtime)
   implementation(libs.room.ktx)
-  // ksp(libs.room.compiler)
+  // ksp(libs.room.compiler)  // KSP 在编译时生成 DAO 实现类
 }

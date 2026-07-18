@@ -60,16 +60,16 @@ import cn.itcast.ai_interview_guide.ui.pages.LoginView
 /**
  * 全局路由表
  */
-@Composable fun NavigationHost(navHostController: NavHostController, paddingValues: PaddingValues) {
-  NavHost(navHostController, RouterMap.HOMEPAGE, Modifier.padding(bottom = paddingValues.calculateBottomPadding())) {
+@Composable fun NavigationHost(navController: NavHostController, paddingValues: PaddingValues) {
+  NavHost(navController, RouterMap.HOMEPAGE, Modifier.padding(bottom = paddingValues.calculateBottomPadding())) {
     composable(RouterMap.HOMEPAGE) {
-      HomePageView(navHostController)
+      HomePageView(navController)
     }
     composable(RouterMap.PROJECT) { }
     composable(RouterMap.INTERVIEW_EXPERIENCE) { }
     composable(RouterMap.MINE) { }
     composable(RouterMap.LOGIN) {
-      LoginView(navHostController)
+      LoginView(navController)
     }
   }
 }

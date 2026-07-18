@@ -8,6 +8,7 @@ lifecycleRuntimeKtx = "2.11.0"
 activityCompose = "1.13.0"
 kotlin = "2.2.10"
 composeBom = "2026.02.01"
+lifecycleViewmodelCompose = "2.10.0"
 retrofit = "2.11.0"
 okhttp = "4.12.0"
 coil = "2.7.0"
@@ -15,10 +16,13 @@ navigationCompose = "2.8.5"
 datastore = "1.1.1"
 room = "2.7.1"
 kotlinxSerialization = "1.7.3"
-ksp = "1.9.24-1.0.20"
+ksp = "2.3.6"
+foundation = "1.11.4"
 
 [libraries]
+androidx-compose-material-icons-core = { module = "androidx.compose.material:material-icons-core" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+androidx-lifecycle-viewmodel-compose = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "lifecycleViewmodelCompose" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
@@ -39,11 +43,16 @@ okhttp-logging = { group = "com.squareup.okhttp3", name = "logging-interceptor",
 coil-compose = { group = "io.coil-kt", name = "coil-compose", version.ref = "coil" }
 navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigationCompose" }
 datastore-preferences = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "datastore" }
+# Room 运行时库 - 包含 Room 的核心 API 和数据库操作支持
 room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
+# Room 编译时注解处理器 - 用于在编译期生成数据库实现代码
+# 必须与 KSP 插件配合使用（取代传统的 kapt）
 room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
+# Room 的 Kotlin 扩展库 - 提供协程支持 (Flow, suspend 函数等)
 room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
 kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinxSerialization" }
 material-icons-extended = { group = "androidx.compose.material", name = "material-icons-extended" }
+androidx-compose-foundation = { group = "androidx.compose.foundation", name = "foundation", version.ref = "foundation" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

@@ -6,7 +6,7 @@ plugins {
 android {
   namespace = "cn.itcast.ai_interview_guide"
   compileSdk {
-    version = release(36) {
+    version = release(37) {
       minorApiLevel = 1
     }
   }
@@ -14,6 +14,7 @@ android {
   defaultConfig {
     applicationId = "cn.itcast.ai_interview_guide"
     minSdk = 23
+    //noinspection OldTargetApi
     targetSdk = 36
     versionCode = 1
     versionName = "1.0"

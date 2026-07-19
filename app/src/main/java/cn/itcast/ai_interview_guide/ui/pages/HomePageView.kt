@@ -32,6 +32,7 @@ import cn.itcast.ai_interview_guide.ui.components.HomeCategorySection
 import cn.itcast.ai_interview_guide.ui.components.SearchBox
 import cn.itcast.ai_interview_guide.ui.components.SkeletonLoader
 import cn.itcast.ai_interview_guide.ui.components.Swiper
+import cn.itcast.ai_interview_guide.ui.navigation.RouterMap
 import cn.itcast.ai_interview_guide.ui.theme.BasicColor
 import cn.itcast.ai_interview_guide.viewmodels.HomePageViewModel
 
@@ -60,7 +61,9 @@ import cn.itcast.ai_interview_guide.viewmodels.HomePageViewModel
     Row(Modifier.fillMaxWidth().statusBarsPadding().height(64.dp).background(BasicColor.HomeBackground).padding(horizontal = 16.dp), verticalAlignment = Alignment.CenterVertically) {
       Image(painterResource(R.drawable.ic_home_scan), null, Modifier.size(24.dp), contentScale = ContentScale.Fit)
       Spacer(Modifier.width(16.dp))
-      SearchBox(Modifier.weight(1f))
+      SearchBox(Modifier.weight(1f)) {
+        navController.navigate(RouterMap.SEARCH)
+      }
       Spacer(Modifier.width(16.dp))
       CheckIn(0)
     }

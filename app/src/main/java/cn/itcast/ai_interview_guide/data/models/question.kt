@@ -75,19 +75,19 @@ enum class SortType(val value: Int) {
   val id: String,
   val questionNo: String? = null,
   val stem: String,
-  val content: String,
+  val content: String? = null,
   val stemAttachmentID: String? = null,
   val subjectName: String? = null,
-  val questionType: Double? = null,
+  val questionType: Int? = 0,
   val planSceneName: PlanSceneName? = null,
-  val difficulty: Double? = null,
+  val difficulty: Int? = 0,
   val createdAt: String? = null,
-  val views: Double,
-  val likeCount: Double,
-  val likeFlag: Double,
-  val creatorAvatar: String,
-  val creatorName: String,
-  val readFlag: Double
+  val views: Int? = 0,
+  val likeCount: Int? = 0,
+  val likeFlag: Int? = 0,
+  val creatorAvatar: String? = null,
+  val creatorName: String? = null,
+  val readFlag: Int? = 0
 )
 
 /**

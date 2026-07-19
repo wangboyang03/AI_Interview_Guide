@@ -31,11 +31,11 @@ import cn.itcast.ai_interview_guide.data.models.Rows
     // 浏览量
     ProvideTextStyle(LocalTextStyle.current.copy(Color(0xFFC3C3C5), 13.sp)) {
       Row(horizontalArrangement = Arrangement.spacedBy(9.6.dp)) {
-        Text("点赞 ${item.likeCount.toInt()}")
+        Text("点赞 ${item.likeCount}")
         Text("|")
-        Text("浏览量 ${item.views.toInt()}")
+        Text("浏览量 ${item.views}")
         Text("|")
-        Text(if (item.readFlag.toInt() == 1) "已看过" else "未看过")
+        Text(if (item.readFlag == 1) "已看过" else "未看过")
       }
     }
   }

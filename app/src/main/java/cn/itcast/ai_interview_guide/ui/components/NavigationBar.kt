@@ -21,6 +21,7 @@ import cn.itcast.ai_interview_guide.data.models.TabsResponse
 import cn.itcast.ai_interview_guide.ui.navigation.RouterMap
 import cn.itcast.ai_interview_guide.ui.pages.HomePageView
 import cn.itcast.ai_interview_guide.ui.pages.LoginView
+import cn.itcast.ai_interview_guide.ui.pages.SearchPage
 
 @Composable fun NavigationBar(navController: NavController) {
   val tabsList = listOf(
@@ -70,6 +71,9 @@ import cn.itcast.ai_interview_guide.ui.pages.LoginView
     composable(RouterMap.MINE) { }
     composable(RouterMap.LOGIN) {
       LoginView(navController)
+    }
+    composable(RouterMap.SEARCH) {
+      SearchPage(navController)
     }
   }
 }

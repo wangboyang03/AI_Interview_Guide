@@ -9,4 +9,5 @@ object RouterMap {
   const val INTERVIEW_EXPERIENCE = "interview_experience"
   const val MINE = "mine"
   const val LOGIN = "login"
+  const val SEARCH = "search"
 }

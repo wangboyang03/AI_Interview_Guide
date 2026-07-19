@@ -48,7 +48,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 
 @Composable fun HomeCategorySection(vm: HomePageViewModel, navController: NavController) {
   // 获取试题分类
-  val questionCategory = vm.questionCategory.collectAsState()
+  val questionCategory by vm.questionCategory.collectAsState()
   // 激活索引的状态变量
   // var activatedIndex by remember { mutableIntStateOf(0) }
   val questionList = vm.questionList.collectAsState()
@@ -65,7 +65,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
   // 控制筛选蒙层的显示隐藏
   var isShowBindSheet by remember { mutableStateOf(false) }
   if (isShowBindSheet) {
-    FilterSheet({ isShowBindSheet = false })
+    FilterSheet(questionCategory,{ isShowBindSheet = false })
   }
 
   Column(Modifier.fillMaxSize()) {
@@ -74,7 +74,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
       SecondaryScrollableTabRow(activatedIndex.value, Modifier.fillMaxWidth(), edgePadding = 16.dp, indicator = {}, divider = {
         HorizontalDivider(Modifier, 1.dp, BasicColor.GrayBorder)
       }) {
-        questionCategory.value.forEachIndexed { index, response ->
+        questionCategory.forEachIndexed { index, response ->
           Tab(activatedIndex.value == index, { vm.getCurrentListDataFromActivatedIndex(index) }, Modifier.height(48.dp)) {
             // Text(response.name, fontSize = 15.sp, color = if (activatedIndex == index) BasicColor.Black else BasicColor.Gray01)
             Row(verticalAlignment = Alignment.CenterVertically) {

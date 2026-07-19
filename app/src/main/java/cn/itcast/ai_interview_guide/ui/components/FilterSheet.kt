@@ -5,6 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.defaultMinSize
@@ -12,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -22,6 +24,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -33,12 +36,16 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import cn.itcast.ai_interview_guide.R
+import cn.itcast.ai_interview_guide.data.models.QuestionCategoryResponse
 import cn.itcast.ai_interview_guide.data.models.SortType
 import cn.itcast.ai_interview_guide.ui.theme.BasicColor
 
 @OptIn(ExperimentalMaterial3Api::class)
-@Composable fun FilterSheet(onDismiss: () -> Unit) {
-  ModalBottomSheet(onDismiss, containerColor = BasicColor.White, dragHandle = null) {
+@Composable fun FilterSheet(types: List<QuestionCategoryResponse>, onDismiss: () -> Unit) {
+  // 当弹出层的高度超过屏幕的一半时 默认会折叠 如果需要让全部显示 需要设置skipPartiallyExpanded
+  val bindSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+
+  ModalBottomSheet(onDismiss, sheetState = bindSheetState, containerColor = BasicColor.White, dragHandle = null/*, modifier = Modifier.requiredHeight(650.dp)*/) {
     Column(Modifier.fillMaxWidth().padding(16.dp)) {
       // 顶部: 重置 | 筛选题目 | 完成
       Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
@@ -66,9 +73,9 @@ import cn.itcast.ai_interview_guide.ui.theme.BasicColor
         Box(Modifier.height(30.dp).clip(RoundedCornerShape(4.dp)).background(BasicColor.GrayBackground).padding(horizontal = 10.dp), contentAlignment = Alignment.Center) {
           Text("推荐", fontSize = 12.sp)
         }*/
-        FilterSheetButton("默认", true, true)
-        FilterSheetButton("浏览量", true, true, true)
-        FilterSheetButton("难度", true, true, true)
+        FilterSheetButton("默认", false, true)
+        FilterSheetButton("浏览量", false, false, true)
+        FilterSheetButton("难度", false, false, true)
         FilterSheetButton("推荐")
       }
 
@@ -77,8 +84,8 @@ import cn.itcast.ai_interview_guide.ui.theme.BasicColor
       // 选择分类
       Text("选择分类", Modifier.padding(top = 20.dp), fontSize = 14.sp, fontWeight = FontWeight.Medium)
 
-      // 分类按钮 - 静态
-      Row(Modifier.padding(top = 12.dp), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+      // 分类按钮
+      /*Row(Modifier.padding(top = 12.dp), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
         Box(Modifier.height(30.dp).clip(RoundedCornerShape(4.dp)).background(BasicColor.GrayBackground).padding(horizontal = 10.dp), contentAlignment = Alignment.Center) {
           Text("Android", fontSize = 12.sp)
         }
@@ -87,6 +94,11 @@ import cn.itcast.ai_interview_guide.ui.theme.BasicColor
         }
         Box(Modifier.height(30.dp).clip(RoundedCornerShape(4.dp)).background(BasicColor.GrayBackground).padding(horizontal = 10.dp), contentAlignment = Alignment.Center) {
           Text("iOS", fontSize = 12.sp)
+        }
+      }*/
+      FlowRow {
+        types.forEachIndexed { index, response ->
+          FilterSheetButton(response.name, response.displayNewestFlag == 1)
         }
       }
     }
@@ -108,7 +120,7 @@ import cn.itcast.ai_interview_guide.ui.theme.BasicColor
   val downArrowLight = selected && isShowSort && (sort.value % 2 == 0)
 
 
-  Box(Modifier.padding(top = 12.dp, end = 10.dp)) {
+  Box(Modifier.padding(top = 12.dp, end = if (isShowTag) 14.dp else 10.dp)) {
     // 主体内容
     Box(Modifier.defaultMinSize(minWidth = 40.dp).height(30.dp).clip(RoundedCornerShape(4.dp)).background(BasicColor.GrayBackground).padding(horizontal = 10.dp), contentAlignment = Alignment.Center) {
       Row() {

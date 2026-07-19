@@ -73,6 +73,25 @@ import kotlinx.coroutines.launch
     searchHistoryKeywords = preferences.querySearchHistory()
   }
 
+  fun requestQuestionListByKeywordOnScope() {
+    scope.launch {
+      isSearching = false // 阀门控制
+      isSearchingByApi = true
+      try {
+        val response = HttpClient.request {
+          HttpClient.api.getQuestionListApi("0", "10", keyword)
+        }
+        searchResult = response.rows
+      } catch (error: Exception) {
+        searchResult = emptyList()
+        Toast.makeText(mContext, "搜索失败,${error.message}", Toast.LENGTH_SHORT).show()
+      } finally {
+        isSearchingByApi = false
+      }
+      isSearching = true
+    }
+  }
+
   Column(Modifier.fillMaxSize()) {
     Row(Modifier.fillMaxWidth().statusBarsPadding().height(64.dp).padding(horizontal = 16.dp), verticalAlignment = Alignment.CenterVertically) {
       // 搜索输入框
@@ -82,7 +101,6 @@ import kotlinx.coroutines.launch
       }, Modifier.weight(1f), placeholder = { Text("请输入试题关键字", fontSize = 14.sp) }, singleLine = true, leadingIcon = { Icon(Icons.Default.Search, null) }, keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search), keyboardActions = KeyboardActions(onSearch = {
         if (keyword.isNotEmpty()) {
           // 用户输入了搜索词可以进行搜索
-          isSearching = false // 阀门控制
           scope.launch {
             // 存储搜索词并查询
             preferences.appendSearchHistory(keyword)
@@ -90,21 +108,7 @@ import kotlinx.coroutines.launch
           }
           keyboardController?.hide() // 搜索完毕隐藏键盘
           // 在事件中开启协程
-          scope.launch {
-            isSearchingByApi = true
-            try {
-              val response = HttpClient.request {
-                HttpClient.api.getQuestionListApi("0", "10", keyword)
-              }
-              searchResult = response.rows
-            } catch (error: Exception) {
-              searchResult = emptyList()
-              Toast.makeText(mContext, "搜索失败,${error.message}", Toast.LENGTH_SHORT).show()
-            } finally {
-              isSearchingByApi = false
-            }
-            isSearching = true
-          }
+          requestQuestionListByKeywordOnScope()
         }
       }))
       Spacer(Modifier.width(16.dp))
@@ -150,10 +154,15 @@ import kotlinx.coroutines.launch
 
         // 关键字标签
         FlowRow(Modifier.fillMaxWidth()) {
-          searchHistoryKeywords.forEach { keyword ->
+          searchHistoryKeywords.forEach {
             // 每个标签
-            Row(Modifier.padding(end = 16.dp, bottom = 16.dp).clip(RoundedCornerShape(16.dp)).background(Color(0xFFF3F4F5)).padding(horizontal = 12.dp, vertical = 8.dp), verticalAlignment = Alignment.CenterVertically) {
-              Text(keyword, fontSize = 14.sp, color = Color(0xFF6F6F6F))
+            Row(Modifier.padding(end = 16.dp, bottom = 16.dp).clip(RoundedCornerShape(16.dp)).background(Color(0xFFF3F4F5)).padding(horizontal = 12.dp, vertical = 8.dp).clickable {
+              // 赋值
+              keyword = it
+              // 开启作用域协程
+              requestQuestionListByKeywordOnScope()
+            }, verticalAlignment = Alignment.CenterVertically) {
+              Text(it, fontSize = 14.sp, color = Color(0xFF6F6F6F))
             }
           }
         }

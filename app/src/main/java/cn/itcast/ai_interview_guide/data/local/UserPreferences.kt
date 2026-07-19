@@ -1,0 +1,61 @@
+package cn.itcast.ai_interview_guide.data.local
+
+import android.content.Context
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.stringPreferencesKey
+import androidx.datastore.preferences.preferencesDataStore
+import cn.itcast.ai_interview_guide.data.Constants
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
+
+private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(Constants.PREFERENCES_DATA_STORE_KEY)
+
+class UserPreferences(context: Context) {
+  // 获取DataStore实例对象
+  private val dataStore = context.dataStore
+  // 添加一个存储搜索记录的键
+  private fun searchHistoryKey(keyword: String) = stringPreferencesKey("${Constants.SEARCH_HISTORY_KEY}$keyword")
+
+  /**
+   * 添加搜索历史
+   */
+  suspend fun appendSearchHistory(keyword: String) {
+    dataStore.edit {
+      it[searchHistoryKey(keyword)] = keyword
+    }
+  }
+
+  /**
+   * 删除单条搜索历史
+   */
+  suspend fun deleteCurrentSearchHistory(keyword: String) {
+    dataStore.edit {
+      it.remove(searchHistoryKey(keyword))
+    }
+  }
+
+  /**
+   * 清空所有搜索历史
+   */
+  suspend fun clearSearchHistory() {
+    dataStore.edit { preferences ->
+      val keysToRemove = preferences.asMap().keys.filter {
+        it.name.startsWith(Constants.SEARCH_HISTORY_KEY)
+      }
+      keysToRemove.forEach { preferences.remove(it) }
+    }
+  }
+
+  /**
+   * 查询搜索历史
+   */
+  suspend fun querySearchHistory(): List<String> {
+    return dataStore.data.map { preferences ->
+      preferences.asMap().filter {
+        it.key.name.startsWith(Constants.SEARCH_HISTORY_KEY)
+      }.values.map { it.toString() }
+    }.first()
+  }
+}

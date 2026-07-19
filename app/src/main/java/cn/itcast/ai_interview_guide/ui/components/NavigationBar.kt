@@ -1,5 +1,7 @@
 package cn.itcast.ai_interview_guide.ui.components
 
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
@@ -62,7 +64,7 @@ import cn.itcast.ai_interview_guide.ui.pages.SearchPage
  * 全局路由表
  */
 @Composable fun NavigationHost(navController: NavHostController, paddingValues: PaddingValues) {
-  NavHost(navController, RouterMap.HOMEPAGE, Modifier.padding(bottom = paddingValues.calculateBottomPadding())) {
+  NavHost(navController, RouterMap.HOMEPAGE, Modifier.padding(bottom = paddingValues.calculateBottomPadding()), enterTransition = { EnterTransition.None }, exitTransition = { ExitTransition.None }, popEnterTransition = { EnterTransition.None }, popExitTransition = { ExitTransition.None }) {
     composable(RouterMap.HOMEPAGE) {
       HomePageView(navController)
     }

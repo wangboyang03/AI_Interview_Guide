@@ -9,6 +9,8 @@ object Constants {
   const val USER_AGENT_TYPE = "Mozilla/5.0"
   const val SUCCESS_CODE = 10000
   const val BASIC_CONTENT_TYPE = "application/json"
+  const val PREFERENCES_DATA_STORE_KEY = "cn.itcast.ai_interview_guide"
+  const val SEARCH_HISTORY_KEY = "search_"
 
   // 接口
   const val QUESTION_CATEGORY_API = "question/type"

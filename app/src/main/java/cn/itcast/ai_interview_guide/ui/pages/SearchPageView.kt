@@ -3,6 +3,7 @@ package cn.itcast.ai_interview_guide.ui.pages
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
@@ -22,6 +23,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
@@ -95,19 +97,27 @@ import kotlinx.coroutines.launch
     }
     HorizontalDivider(thickness = 0.5.dp, color = BasicColor.GrayBorder)
 
-    if (isSearching && searchResult.isEmpty()) {
-      Text("没有搜索到相关内容", Modifier.fillMaxWidth(), textAlign = TextAlign.Center)
-    }
-
     /*val mockResults = listOf(
       Rows(id = "1", stem = "Kotlin协程的挂起机制是什么？", difficulty = 3),
       Rows(id = "2", stem = "suspend函数和普通函数的区别？", difficulty = 2)
     )*/
     if (isSearching) {
-      // 搜索中 应该显示搜索结果列表
-      LazyColumn {
-        items(searchResult) {
-          QuestionListRow(it)
+      if (isSearchingByApi) {
+        // 此时处理搜索中的提示
+        Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+          CircularProgressIndicator()
+        }
+      } else if (searchResult.isEmpty()) {
+        // 处理搜索列表为空的提示
+        Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+          Text("没有搜索到相关内容", Modifier.fillMaxWidth(), textAlign = TextAlign.Center)
+        }
+      } else {
+        // 搜索中 应该显示搜索结果列表
+        LazyColumn {
+          items(searchResult) {
+            QuestionListRow(it)
+          }
         }
       }
     } else {

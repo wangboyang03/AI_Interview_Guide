@@ -2,6 +2,7 @@ package cn.itcast.ai_interview_guide.ui.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -13,7 +14,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -41,7 +41,7 @@ import cn.itcast.ai_interview_guide.data.models.SortType
 import cn.itcast.ai_interview_guide.ui.theme.BasicColor
 
 @OptIn(ExperimentalMaterial3Api::class)
-@Composable fun FilterSheet(types: List<QuestionCategoryResponse>, onDismiss: () -> Unit) {
+@Composable fun FilterSheet(types: List<QuestionCategoryResponse>, filterIndex: Int, onChangeIndex: (Int) -> Unit, filterSortType: SortType, onSortTypeChange: (SortType) -> Unit, onDismiss: () -> Unit, onConfirm: () -> Unit) {
   // 当弹出层的高度超过屏幕的一半时 默认会折叠 如果需要让全部显示 需要设置skipPartiallyExpanded
   val bindSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
@@ -49,9 +49,14 @@ import cn.itcast.ai_interview_guide.ui.theme.BasicColor
     Column(Modifier.fillMaxWidth().padding(16.dp)) {
       // 顶部: 重置 | 筛选题目 | 完成
       Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-        Text("重置", fontSize = 16.sp, color = BasicColor.Gray03)
+        Text("重置", fontSize = 16.sp, color = BasicColor.Gray03, modifier = Modifier.clickable {
+          onChangeIndex(0)
+          onSortTypeChange(SortType.Default)
+        })
         Text("筛选题目", Modifier.weight(1f), fontSize = 18.sp, fontWeight = FontWeight.Medium, textAlign = TextAlign.Center)
-        Text("完成", fontSize = 16.sp, color = BasicColor.MainColor)
+        Text("完成", fontSize = 16.sp, color = BasicColor.MainColor, modifier = Modifier.clickable {
+          onConfirm() // 完成逻辑待处理
+        })
       }
 
       Spacer(Modifier.height(16.dp))
@@ -73,10 +78,30 @@ import cn.itcast.ai_interview_guide.ui.theme.BasicColor
         Box(Modifier.height(30.dp).clip(RoundedCornerShape(4.dp)).background(BasicColor.GrayBackground).padding(horizontal = 10.dp), contentAlignment = Alignment.Center) {
           Text("推荐", fontSize = 12.sp)
         }*/
-        FilterSheetButton("默认", false, true)
-        FilterSheetButton("浏览量", false, false, true)
-        FilterSheetButton("难度", false, false, true)
-        FilterSheetButton("推荐")
+        FilterSheetButton("默认", false, filterSortType == SortType.Default, onClick = { onSortTypeChange(SortType.Default) })
+        FilterSheetButton("浏览量", false, filterSortType == SortType.ViewLow || filterSortType == SortType.ViewHigh, true, filterSortType, {
+          if (filterSortType == SortType.ViewLow || filterSortType == SortType.ViewHigh) {
+            // 满足条件时认为选中 只需要取反即可
+            onSortTypeChange(
+              if (filterSortType == SortType.ViewLow) SortType.ViewHigh else SortType.ViewLow
+            )
+          } else {
+            onSortTypeChange(SortType.ViewLow) // 如果当前选中不是「浏览量」点击后选中降序
+          }
+        })
+        FilterSheetButton("难度", false, filterSortType == SortType.DifficultyLow || filterSortType == SortType.DifficultyHigh, true, filterSortType, {
+          if (filterSortType == SortType.DifficultyLow || filterSortType == SortType.DifficultyHigh) {
+            // 满足条件时认为选中 只需要取反即可
+            onSortTypeChange(
+              if (filterSortType == SortType.DifficultyLow) SortType.DifficultyHigh else SortType.DifficultyLow
+            )
+          } else {
+            onSortTypeChange(SortType.DifficultyLow) // 如果当前选中不是「难度」点击后选中降序
+          }
+        })
+        FilterSheetButton("推荐", false, filterSortType == SortType.Commend, onClick = {
+          onSortTypeChange(SortType.Commend)
+        })
       }
 
       Spacer(Modifier.height(20.dp))
@@ -98,7 +123,7 @@ import cn.itcast.ai_interview_guide.ui.theme.BasicColor
       }*/
       FlowRow {
         types.forEachIndexed { index, response ->
-          FilterSheetButton(response.name, response.displayNewestFlag == 1)
+          FilterSheetButton(response.name, response.displayNewestFlag == 1, filterIndex == index, onClick = { onChangeIndex(index) })
         }
       }
     }
@@ -120,13 +145,13 @@ import cn.itcast.ai_interview_guide.ui.theme.BasicColor
   val downArrowLight = selected && isShowSort && (sort.value % 2 == 0)
 
 
-  Box(Modifier.padding(top = 12.dp, end = if (isShowTag) 14.dp else 10.dp)) {
+  Box(Modifier.padding(top = 12.dp, end = if (isShowTag) 14.dp else 10.dp).clickable{ onClick() }) {
     // 主体内容
     Box(Modifier.defaultMinSize(minWidth = 40.dp).height(30.dp).clip(RoundedCornerShape(4.dp)).background(BasicColor.GrayBackground).padding(horizontal = 10.dp), contentAlignment = Alignment.Center) {
-      Row() {
+      Row(verticalAlignment = Alignment.CenterVertically) {
         Text(label, fontSize = 13.sp, color = if (selected) BasicColor.MainColor else BasicColor.Black)
         if (isShowSort) {
-          Column(Modifier.padding(start = 2.dp), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
+          Column(Modifier.padding(start = 2.dp), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy((-4).dp)) {
             Icon(Icons.Default.KeyboardArrowUp, null, Modifier.size(15.dp, 9.dp), if (upArrowLight) BasicColor.MainColor else BasicColor.Black)
             // 下箭头
             Icon(Icons.Default.KeyboardArrowDown, null, Modifier.size(15.dp, 9.dp), if (downArrowLight) BasicColor.MainColor else BasicColor.Black)

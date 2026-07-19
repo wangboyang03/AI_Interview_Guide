@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import cn.itcast.ai_interview_guide.data.models.QuestionCategoryResponse
 import cn.itcast.ai_interview_guide.data.models.QuestionListResponse
 import cn.itcast.ai_interview_guide.data.models.Rows
+import cn.itcast.ai_interview_guide.data.models.SortType
 import cn.itcast.ai_interview_guide.utils.HttpClient
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -47,7 +48,7 @@ class HomePageViewModel(application: Application) : AndroidViewModel(application
       try {
         val type = _questionCategory.value.getOrNull(_activatedIndex.value)?.id ?: return@launch
         val response = HttpClient.request {
-          HttpClient.api.getQuestionListApi("$type", "10", null, null, "$page", "10")
+          HttpClient.api.getQuestionListApi("$type", "10", null, "${_sortType.value.value}", "$page", "10")
         }
         // _questionList.value = response.rows
         if (page == 1) {
@@ -100,5 +101,15 @@ class HomePageViewModel(application: Application) : AndroidViewModel(application
     if (_isLoading.value || _isFinished.value) return
     _isLoading.value = true // 正在加载
     getQuestionListData()
+  }
+
+  // 排序筛选与弹层联动
+  private val _sortType = MutableStateFlow(SortType.Default)
+  val sortType = _sortType.asStateFlow()
+
+  fun applySwitchSorting(index: Int, sort: SortType) {
+    _activatedIndex.value = index // 将外部传入的分类索引给激活索引实现联动
+    _sortType.value = sort
+    refreshListData()
   }
 }

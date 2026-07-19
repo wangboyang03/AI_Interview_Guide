@@ -69,8 +69,12 @@ import kotlinx.coroutines.flow.MutableStateFlow
   var filterIndex by remember { mutableIntStateOf(0) }
   // 记录选择排序字段 default、difficulty、view
   var filterSortType by remember { mutableStateOf(SortType.Commend) }
+  val sortType by vm.sortType.collectAsState()
   if (isShowBindSheet) {
-    FilterSheet(questionCategory, filterIndex, { filterIndex = it }, filterSortType, { filterSortType = it }, { isShowBindSheet = false }, { isShowBindSheet = false })
+    FilterSheet(questionCategory, filterIndex, { filterIndex = it }, filterSortType, { filterSortType = it }, { isShowBindSheet = false }, {
+      vm.applySwitchSorting(filterIndex, filterSortType)
+      isShowBindSheet = false
+    })
   }
 
   Column(Modifier.fillMaxSize()) {
@@ -97,7 +101,11 @@ import kotlinx.coroutines.flow.MutableStateFlow
         }
       }
 
-      Box(Modifier.align(Alignment.TopEnd).size(48.dp).clickable { isShowBindSheet = true }, contentAlignment = Alignment.Center) {
+      Box(Modifier.align(Alignment.TopEnd).size(48.dp).clickable {
+        isShowBindSheet = true
+        filterIndex = activatedIndex
+        filterSortType = sortType
+      }, contentAlignment = Alignment.Center) {
         // 渐变背景遮罩
         Box(Modifier.fillMaxSize().background(Brush.horizontalGradient(colors = listOf(BasicColor.White.copy(.4f), BasicColor.White), startX = 0f)))
         Image(painterResource(R.drawable.ic_home_filter), null, Modifier.size(24.dp), contentScale = ContentScale.Fit)

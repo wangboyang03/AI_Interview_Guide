@@ -45,9 +45,10 @@ import cn.itcast.ai_interview_guide.viewmodels.HomePageViewModel
   val activatedIndex by homepageViewModel.activatedIndex.collectAsState()
   val questionList by homepageViewModel.questionList.collectAsState()
   val loading by homepageViewModel.loading.collectAsState()
+  val sortType by homepageViewModel.sortType.collectAsState()
 
   // 分类变化时需要加载列表
-  LaunchedEffect(activatedIndex, questionCategory.size) {
+  LaunchedEffect(activatedIndex, questionCategory.size, sortType) {
     if (questionCategory.isNotEmpty()) {
       // 分类列表不为空 才能请求当前分类下的列表数据
       homepageViewModel.refreshListData()

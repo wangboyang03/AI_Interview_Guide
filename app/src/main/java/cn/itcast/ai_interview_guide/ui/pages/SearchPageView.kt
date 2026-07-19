@@ -22,6 +22,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.CircularProgressIndicator
@@ -70,7 +71,7 @@ import kotlinx.coroutines.launch
   val preferences = remember { UserPreferences(mContext.applicationContext) }
 
   LaunchedEffect(Unit) {
-    searchHistoryKeywords = preferences.querySearchHistory()
+    searchHistoryKeywords = preferences.querySearchHistory().reversed()
   }
 
   fun requestQuestionListByKeywordOnScope() {
@@ -104,7 +105,7 @@ import kotlinx.coroutines.launch
           scope.launch {
             // 存储搜索词并查询
             preferences.appendSearchHistory(keyword)
-            searchHistoryKeywords = preferences.querySearchHistory()
+            searchHistoryKeywords = preferences.querySearchHistory().reversed()
           }
           keyboardController?.hide() // 搜索完毕隐藏键盘
           // 在事件中开启协程
@@ -141,12 +142,27 @@ import kotlinx.coroutines.launch
         }
       }
     } else {
+      var isDeleteState by remember { mutableStateOf(false) }
       // 否则显示搜索历史
       Column(Modifier.padding(16.dp)) {
         // 标题行
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
           Text("搜索记录", fontSize = 15.sp, color = BasicColor.Gray01)
-          Icon(Icons.Default.Delete, null, modifier = Modifier.size(16.dp), tint = BasicColor.Gray01)
+          if (isDeleteState) {
+            Row {
+              Text("全部删除", Modifier.clickable {
+                scope.launch {
+                  preferences.clearSearchHistory()
+                  searchHistoryKeywords = emptyList()
+                  isDeleteState = false
+                }
+              }, fontSize = 14.sp, fontWeight = FontWeight.Black, color = BasicColor.MainColor)
+              Text("|", fontSize = 14.sp, color = BasicColor.Gray01)
+              Text("完成", Modifier.clickable { isDeleteState = false }, fontSize = 14.sp, color = BasicColor.Gray01)
+            }
+          } else {
+            Icon(Icons.Default.Delete, null, Modifier.size(16.dp).clickable { isDeleteState = true }, BasicColor.Gray01)
+          }
         }
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -163,6 +179,14 @@ import kotlinx.coroutines.launch
               requestQuestionListByKeywordOnScope()
             }, verticalAlignment = Alignment.CenterVertically) {
               Text(it, fontSize = 14.sp, color = Color(0xFF6F6F6F))
+              if (isDeleteState) {
+                Icon(Icons.Default.Close, null, Modifier.size(12.dp).clickable {
+                  scope.launch {
+                    preferences.deleteCurrentSearchHistory(it)
+                    searchHistoryKeywords = preferences.querySearchHistory().reversed()
+                  }
+                }, BasicColor.Black)
+              }
             }
           }
         }

@@ -82,9 +82,9 @@ class HomePageViewModel(application: Application) : AndroidViewModel(application
   // 处理下拉刷新
   private val _isRefreshing = MutableStateFlow(false)
   val isRefreshing = _isRefreshing.asStateFlow()
-  fun refreshListData() {
+  fun refreshListData(isFirstRefresh: Boolean = true) {
     if (_isRefreshing.value) return
-    _isRefreshing.value = true
+    _isRefreshing.value = isFirstRefresh
     page = 1
     _isFinished.value = false // 如果加载完成没有更多数据切换索引后需要重置状态
     getQuestionListData()

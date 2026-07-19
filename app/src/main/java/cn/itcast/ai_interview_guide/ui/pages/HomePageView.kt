@@ -52,7 +52,7 @@ import cn.itcast.ai_interview_guide.viewmodels.HomePageViewModel
   LaunchedEffect(activatedIndex, questionCategory.size, sortType) {
     if (questionCategory.isNotEmpty()) {
       // 分类列表不为空 才能请求当前分类下的列表数据
-      homepageViewModel.refreshListData()
+      homepageViewModel.refreshListData(false)
     }
   }
 

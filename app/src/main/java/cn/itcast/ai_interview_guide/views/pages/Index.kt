@@ -41,7 +41,9 @@ import cn.itcast.ai_interview_guide.views.routes.RouterMap
     Navigation(response, navController, currentDestination)
   }) {
     NavHost(navController, RouterMap.HOMEPAGE, Modifier.padding(bottom = it.calculateBottomPadding())) {
-      composable(RouterMap.HOMEPAGE) {}
+      composable(RouterMap.HOMEPAGE) {
+        HomePageView()
+      }
       composable(RouterMap.PROJECT) {}
       composable(RouterMap.EXPERIENCE) {}
       composable(RouterMap.MINE) {}

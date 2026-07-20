@@ -1,6 +1,6 @@
 import androidx.compose.ui.graphics.Color
 
-object AppColors {
+object Colors {
   val MainColor = Color(0xFFFA6D1D)        // 主题橙色
   val Green = Color(0xFF41B883)            // 绿色
   val Blue = Color(0xFF3266EE)             // 蓝色

@@ -20,6 +20,8 @@ import androidx.compose.material3.SecondaryScrollableTabRow
 import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
@@ -30,27 +32,24 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import cn.itcast.ai_interview_guide.R
-import cn.itcast.ai_interview_guide.models.QuestionCategoryResponse
 import cn.itcast.ai_interview_guide.models.Row
+import cn.itcast.ai_interview_guide.viewmodels.HomeViewModel
 
-@Composable fun HomeCategory() {
-  val mockData = listOf(
-    QuestionCategoryResponse(1, "ArkTS", 0),
-    QuestionCategoryResponse(2, "ArkUI", 1),
-    QuestionCategoryResponse(3, "Hap", 1),
-    QuestionCategoryResponse(4, "Hsp", 0),
-    QuestionCategoryResponse(5, "Har", 0),
-    QuestionCategoryResponse(6, "Ability", 0),
-    QuestionCategoryResponse(7, "Stage", 0),
-    QuestionCategoryResponse(8, "Kit", 0)
-  )
+@Composable fun HomeCategory(homeViewModel: HomeViewModel = viewModel()) {
+  val questionCategoryList by homeViewModel.questionCategoryList.collectAsState()
+
+  LaunchedEffect(Unit) {
+    homeViewModel.getQuestionCategoryList()
+  }
+
   var activeIndex by remember { mutableIntStateOf(0) } // 二级Tab选中的激活索引双向绑定
   Column(Modifier.fillMaxSize()) {
     SecondaryScrollableTabRow(activeIndex, Modifier.height(44.dp), edgePadding = 0.dp, indicator = {}, divider = {
       HorizontalDivider(thickness = 0.5.dp, color = Colors.GrayBorder)
     }) {
-      mockData.forEachIndexed { index, response ->
+      questionCategoryList.forEachIndexed { index, response ->
         Tab(activeIndex == index, { activeIndex = index }) {
           val selected = activeIndex == index
           val indicatorWidth by animateDpAsState(if (selected) 20.dp else 0.dp, tween(durationMillis = if (selected) 300 else 0), "indicator_width")
@@ -67,8 +66,8 @@ import cn.itcast.ai_interview_guide.models.Row
       }
     }
     Box(Modifier.fillMaxSize()) {
-      if (mockData.isNotEmpty()) {
-        val currentItem = mockData[activeIndex]
+      if (questionCategoryList.isNotEmpty()) {
+        val currentItem = questionCategoryList[activeIndex]
         // 临时数据
         val mockItems = listOf(
           Row("1", "ArkUI的容器组件有哪些？说说它们的使用场景", 3, 14, 16211, 1),

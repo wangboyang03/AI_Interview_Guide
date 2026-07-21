@@ -10,4 +10,7 @@ object RouterMap {
   const val MINE = "mine"
   const val LOGIN = "login"
   const val SEARCH = "search"
+  const val SETTINGS = "settings"
+  const val PROFILE_EDIT = "profile_edit"
+  const val AUDIO = "audio"
 }

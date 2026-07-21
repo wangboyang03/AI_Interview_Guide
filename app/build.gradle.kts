@@ -59,6 +59,9 @@ dependencies {
   implementation(libs.androidx.compose.material.icons.core)
   implementation(libs.material.icons.extended)
 
+  // Coil 图片加载
+  implementation(libs.coil.compose)
+
   /** Navigation **/
   implementation(libs.navigation.compose)
 

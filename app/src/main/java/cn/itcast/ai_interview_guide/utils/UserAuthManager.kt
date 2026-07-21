@@ -1,8 +1,10 @@
 package cn.itcast.ai_interview_guide.utils
 
 import android.content.Context
+import androidx.navigation.NavController
 import cn.itcast.ai_interview_guide.data.local.UserPreferences
 import cn.itcast.ai_interview_guide.data.models.LoginResponse
+import cn.itcast.ai_interview_guide.ui.navigation.RouterMap
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.serialization.json.Json
@@ -53,5 +55,11 @@ object UserAuthManager {
 
   fun getCurrentUser(): LoginResponse = _currentUser.value
 
-  fun checkUserAuth() : Boolean = _currentUser.value.token.isNotEmpty()
+  fun checkUserAuth(navController: NavController, routerName: String) {
+    if (_currentUser.value.token.isNotEmpty()) {
+      navController.navigate(routerName)
+    } else {
+      navController.navigate(RouterMap.LOGIN)
+    }
+  }
 }

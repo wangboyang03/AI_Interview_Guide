@@ -25,10 +25,14 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import cn.itcast.ai_interview_guide.R
 import cn.itcast.ai_interview_guide.data.models.TabsResponse
 import cn.itcast.ai_interview_guide.ui.navigation.RouterMap
+import cn.itcast.ai_interview_guide.ui.pages.AudioView
 import cn.itcast.ai_interview_guide.ui.pages.HomePageView
 import cn.itcast.ai_interview_guide.ui.pages.LoginView
 import cn.itcast.ai_interview_guide.ui.pages.MineView
+import cn.itcast.ai_interview_guide.ui.pages.ProfileEditView
 import cn.itcast.ai_interview_guide.ui.pages.SearchPage
+import cn.itcast.ai_interview_guide.ui.pages.SettingsView
+import okhttp3.Route
 
 @Composable fun NavigationBar(navController: NavController) {
   val tabsList = listOf(
@@ -89,6 +93,15 @@ import cn.itcast.ai_interview_guide.ui.pages.SearchPage
     }
     composable(RouterMap.SEARCH) {
       SearchPage(navController)
+    }
+    composable(RouterMap.AUDIO) {
+      AudioView()
+    }
+    composable(RouterMap.PROFILE_EDIT) {
+      ProfileEditView()
+    }
+    composable(RouterMap.SETTINGS) {
+      SettingsView()
     }
   }
 }

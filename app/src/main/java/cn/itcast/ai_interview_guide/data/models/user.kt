@@ -8,7 +8,7 @@ import kotlinx.serialization.Serializable
 )
 
 @Serializable data class LoginResponse (
-  val avatar: String? = null,
+  val avatar: String = "",
   val clockinNumbers: Long? = null,
   val id: String = "",
   val nickName: String = "",

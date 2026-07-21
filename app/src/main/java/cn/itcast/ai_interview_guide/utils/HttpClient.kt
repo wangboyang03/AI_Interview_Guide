@@ -7,16 +7,23 @@ import cn.itcast.ai_interview_guide.data.apis.ApiService
 import cn.itcast.ai_interview_guide.data.models.ResponseData
 import cn.itcast.ai_interview_guide.utils.HttpClient.Token
 import kotlinx.serialization.json.Json
+import okhttp3.Authenticator
 import okhttp3.Interceptor
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
+import okhttp3.Request
 import okhttp3.Response
+import okhttp3.Route
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.kotlinx.serialization.asConverterFactory
 
+typealias TokenExpiredCallback = () -> Unit
+
 object HttpClient {
   var Token: String = ""
+  // 注册Token过期的回调函数
+  var onTokenExpired: TokenExpiredCallback? = null
 
   // 配置JSON
   private val JSON = Json {
@@ -74,7 +81,7 @@ class ResponseInterceptor: Interceptor {
     when(response.code) {
       401 -> {
         Token = "" // 清除本地Token
-        // HttpClient.onTokenExpired?.invoke() // 通知外部Token过期了
+        HttpClient.onTokenExpired?.invoke() // 通知外部Token过期了
       }
     }
     return response

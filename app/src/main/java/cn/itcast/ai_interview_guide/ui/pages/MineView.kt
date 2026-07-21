@@ -36,6 +36,7 @@ import cn.itcast.ai_interview_guide.R
 import cn.itcast.ai_interview_guide.ui.components.CheckIn
 import cn.itcast.ai_interview_guide.ui.navigation.RouterMap
 import cn.itcast.ai_interview_guide.ui.theme.BasicColor
+import cn.itcast.ai_interview_guide.utils.HttpClient
 import cn.itcast.ai_interview_guide.utils.UserAuthManager
 import cn.itcast.ai_interview_guide.utils.formatTime
 import coil.compose.AsyncImage
@@ -64,7 +65,18 @@ import coil.compose.AsyncImage
     Row(Modifier.fillMaxWidth().clip(RoundedCornerShape(8.dp)).background(BasicColor.White).padding(16.dp), Arrangement.SpaceBetween) {
       CentralPorcelain(R.drawable.ic_mine_history, "历史记录") { /* TODO */ }
       CentralPorcelain(R.drawable.ic_mine_collect, "我的收藏") { /* TODO */ }
-      CentralPorcelain(R.drawable.ic_mine_like, "我的点赞") { /* TODO */ }
+      CentralPorcelain(R.drawable.ic_mine_like, "测试Token过期") {
+        try {
+          HttpClient.Token = "token"
+          navController.navigate(RouterMap.HOMEPAGE) {
+            popUpTo(RouterMap.HOMEPAGE) {
+              inclusive = true
+            }
+          }
+        } catch (error: Exception) {
+          error.message
+        }
+      }
       CentralPorcelain(R.drawable.ic_mine_study, "累计学时", formatTime(userResponse.totalTime?.toInt() ?: 0)) { /* TODO */ }
     }
     Column(Modifier.fillMaxWidth().clip(RoundedCornerShape(8.dp)).background(BasicColor.White)) {

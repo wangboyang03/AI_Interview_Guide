@@ -14,6 +14,7 @@ import androidx.lifecycle.lifecycleScope
 import cn.itcast.ai_interview_guide.data.local.UserPreferences
 import cn.itcast.ai_interview_guide.ui.pages.ScaffoldComponent
 import cn.itcast.ai_interview_guide.ui.theme.AI_Interview_GuideTheme
+import cn.itcast.ai_interview_guide.utils.HttpClient
 import cn.itcast.ai_interview_guide.utils.UserAuthManager
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -33,6 +34,12 @@ class MainActivity : ComponentActivity() {
     // 阻塞式读取用户信息
     runBlocking {
       UserAuthManager.init(this@MainActivity)
+    }
+
+    HttpClient.onTokenExpired = {
+      runBlocking {
+        UserAuthManager.deleteUserInformation()
+      }
     }
 
     setContent {

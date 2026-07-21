@@ -12,10 +12,17 @@ import kotlinx.serialization.Serializable
   val clockinNumbers: Long? = null,
   val id: String = "",
   val nickName: String = "",
-  val refreshToken: String = "",
+  var refreshToken: String = "",
   val shareInfo: String = "",
-  val token: String = "",
+  var token: String = "",
   val totalTime: Long? = null,
   val username: String? = null
 )
 
+@Serializable data class RefreshTokenResponse (
+  val avatar: String? = "",
+  val id: String = "",
+  val nickName: String? = "",
+  val refreshToken: String,
+  val token: String
+)

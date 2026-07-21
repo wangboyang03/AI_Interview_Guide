@@ -13,6 +13,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.SecondaryScrollableTabRow
 import androidx.compose.material3.Tab
@@ -30,6 +32,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import cn.itcast.ai_interview_guide.R
 import cn.itcast.ai_interview_guide.models.QuestionCategoryResponse
+import cn.itcast.ai_interview_guide.models.Row
 
 @Composable fun HomeCategory() {
   val mockData = listOf(
@@ -66,7 +69,19 @@ import cn.itcast.ai_interview_guide.models.QuestionCategoryResponse
     Box(Modifier.fillMaxSize()) {
       if (mockData.isNotEmpty()) {
         val currentItem = mockData[activeIndex]
+        // 临时数据
+        val mockItems = listOf(
+          Row("1", "ArkUI的容器组件有哪些？说说它们的使用场景", 3, 14, 16211, 1),
+          Row("2", "ArkTS中this的常用场景及使用注意事项", 1, 7, 6726, 0),
+          Row("3", "鸿蒙应用的生命周期管理如何实现", 5, 22, 8342, 1),
+        )
         // TODO: 试题列表
+        LazyColumn(Modifier.fillMaxSize().background(Colors.GrayBackground)) {
+          items(mockItems) {
+            QuestionListItem(it)
+            HorizontalDivider(Modifier.padding(horizontal = 16.dp), 0.5.dp, Colors.GrayBorder)
+          }
+        }
       }
     }
   }

@@ -16,7 +16,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
-@Composable fun QuestionTag(difficulty: Int = 0, label: String = "未知", color: Color? = null) {
+@Composable fun QuestionTag(difficulty: Int? = 0, label: String = "", color: Color? = null) {
   val TagList = when(difficulty) {
     1,2 -> "简单" to Colors.Green
     3,4 -> "一般" to Colors.Blue
@@ -24,5 +24,5 @@ import androidx.compose.ui.unit.sp
     else -> label to color
   }
 
-  TagList.second?.let { Text(if (label.isNotEmpty()) label else TagList.first, Modifier.defaultMinSize(minWidth = 34.dp).height(24.dp).clip(RoundedCornerShape(2.dp)).background(Colors.GrayBackground).wrapContentWidth(Alignment.CenterHorizontally).wrapContentHeight(Alignment.CenterVertically).padding(horizontal = 6.dp), it, fontSize = 10.sp, ) }
+  TagList.second?.let { Text(if (label.isNotEmpty()) label else TagList.first, Modifier.defaultMinSize(minWidth = 34.dp).height(24.dp).clip(RoundedCornerShape(2.dp)).background(Colors.GrayBackground).wrapContentWidth(Alignment.CenterHorizontally).wrapContentHeight(Alignment.CenterVertically).padding(horizontal = 6.dp), it, fontSize = 12.sp, ) }
 }

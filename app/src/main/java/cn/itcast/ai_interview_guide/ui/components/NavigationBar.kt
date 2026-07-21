@@ -1,5 +1,7 @@
 package cn.itcast.ai_interview_guide.ui.components
 
+import android.app.Activity
+import androidx.activity.compose.LocalActivity
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
 import androidx.compose.foundation.Image
@@ -11,7 +13,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.core.view.WindowCompat
 import androidx.navigation.NavController
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
@@ -38,6 +42,12 @@ import cn.itcast.ai_interview_guide.ui.pages.SearchPage
   val navBackStackEntry by navController.currentBackStackEntryAsState()
   // 获取当前页面的路由名
   val currentDestination = navBackStackEntry?.destination
+
+  // 控制状态栏图标颜色
+  val activity = LocalActivity.current as Activity
+  val isMinePage = currentDestination?.route == RouterMap.MINE
+  WindowCompat.getInsetsController(activity.window, activity.window.decorView).isAppearanceLightStatusBars = !isMinePage
+  // WindowCompat.getInsetsController(activity.window, activity.window.decorView).isAppearanceLightNavigationBars = false
 
   // 控制页面跳转时隐藏底Tab方式
   if (currentDestination?.route in tabsList.map { it.routerName }) {

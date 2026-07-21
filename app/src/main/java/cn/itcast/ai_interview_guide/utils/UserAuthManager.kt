@@ -1,11 +1,8 @@
 package cn.itcast.ai_interview_guide.utils
 
 import android.content.Context
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import cn.itcast.ai_interview_guide.data.local.UserPreferences
 import cn.itcast.ai_interview_guide.data.models.LoginResponse
-import cn.itcast.ai_interview_guide.utils.UserAuthManager.setUserInformation
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.serialization.json.Json

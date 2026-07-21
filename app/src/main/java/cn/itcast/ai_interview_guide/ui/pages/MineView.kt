@@ -15,6 +15,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ChevronRight
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -42,7 +45,7 @@ import cn.itcast.ai_interview_guide.ui.theme.BasicColor
       // 打卡徽章
       CheckIn()
     }
-    Row(Modifier.fillMaxWidth().clip(RoundedCornerShape(8.dp)).background(BasicColor.White).padding(16.dp), Arrangement.SpaceEvenly) {
+    Row(Modifier.fillMaxWidth().clip(RoundedCornerShape(8.dp)).background(BasicColor.White).padding(16.dp), Arrangement.SpaceBetween) {
       CentralPorcelain(R.drawable.ic_mine_history, "历史记录") { /* TODO */ }
       CentralPorcelain(R.drawable.ic_mine_collect, "我的收藏") { /* TODO */ }
       CentralPorcelain(R.drawable.ic_mine_like, "我的点赞") { /* TODO */ }
@@ -81,6 +84,6 @@ private fun ToolItem(iconRes: Int, name: String, onClick: () -> Unit) {
     Image(painterResource(iconRes), null, Modifier.size(16.dp))
     Spacer(modifier = Modifier.width(12.dp))
     Text(name, Modifier.weight(1f), fontSize = 14.sp, )
-    Text(">", fontSize = 12.sp, color = BasicColor.Gray01)
+    Icon(Icons.Default.ChevronRight, null, Modifier.size(12.dp), BasicColor.Gray01)
   }
 }

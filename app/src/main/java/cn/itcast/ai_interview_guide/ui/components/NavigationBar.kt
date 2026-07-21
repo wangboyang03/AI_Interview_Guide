@@ -23,6 +23,7 @@ import cn.itcast.ai_interview_guide.data.models.TabsResponse
 import cn.itcast.ai_interview_guide.ui.navigation.RouterMap
 import cn.itcast.ai_interview_guide.ui.pages.HomePageView
 import cn.itcast.ai_interview_guide.ui.pages.LoginView
+import cn.itcast.ai_interview_guide.ui.pages.MineView
 import cn.itcast.ai_interview_guide.ui.pages.SearchPage
 
 @Composable fun NavigationBar(navController: NavController) {
@@ -70,7 +71,9 @@ import cn.itcast.ai_interview_guide.ui.pages.SearchPage
     }
     composable(RouterMap.PROJECT) { }
     composable(RouterMap.INTERVIEW_EXPERIENCE) { }
-    composable(RouterMap.MINE) { }
+    composable(RouterMap.MINE) {
+      MineView(navController)
+    }
     composable(RouterMap.LOGIN) {
       LoginView(navController)
     }

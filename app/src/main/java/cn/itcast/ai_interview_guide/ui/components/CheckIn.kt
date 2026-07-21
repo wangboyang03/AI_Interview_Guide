@@ -21,7 +21,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import cn.itcast.ai_interview_guide.R
 
-@Composable fun CheckIn(checkInCount: Int) {
+@Composable fun CheckIn(checkInCount: Int = 0) {
   // val checkInCount: Int by remember { mutableIntStateOf(1) } 响应式不写在组件里
   Row(Modifier.width(74.dp).height(28.dp)) {
     if (checkInCount > 0) {

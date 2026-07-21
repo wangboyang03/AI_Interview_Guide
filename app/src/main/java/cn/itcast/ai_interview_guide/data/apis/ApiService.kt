@@ -1,10 +1,14 @@
 package cn.itcast.ai_interview_guide.data.apis
 
 import cn.itcast.ai_interview_guide.data.Constants
+import cn.itcast.ai_interview_guide.data.models.LoginRequest
+import cn.itcast.ai_interview_guide.data.models.LoginResponse
 import cn.itcast.ai_interview_guide.data.models.QuestionCategoryResponse
 import cn.itcast.ai_interview_guide.data.models.QuestionListResponse
 import cn.itcast.ai_interview_guide.data.models.ResponseData
+import retrofit2.http.Body
 import retrofit2.http.GET
+import retrofit2.http.POST
 import retrofit2.http.Query
 
 interface ApiService {
@@ -24,4 +28,9 @@ interface ApiService {
     @Query("page") page: String? = null,
     @Query("pageSize") pageSize: String? = null
   ): ResponseData<QuestionListResponse>
+
+  /**
+   * 登录
+   */
+  @POST(Constants.LOGIN_API) suspend fun getUserLoginInformation(@Body params: LoginRequest): ResponseData<LoginResponse>
 }

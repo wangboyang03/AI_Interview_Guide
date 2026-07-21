@@ -7,6 +7,7 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import cn.itcast.ai_interview_guide.data.Constants
+import cn.itcast.ai_interview_guide.data.models.LoginResponse
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 
@@ -15,6 +16,9 @@ private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(Co
 class UserPreferences(context: Context) {
   // 获取DataStore实例对象
   private val dataStore = context.dataStore
+
+  /** 搜索相关存储 **/
+
   // 添加一个存储搜索记录的键
   private fun searchHistoryKey(keyword: String) = stringPreferencesKey("${Constants.SEARCH_HISTORY_KEY}$keyword")
 
@@ -57,5 +61,24 @@ class UserPreferences(context: Context) {
         it.key.name.startsWith(Constants.SEARCH_HISTORY_KEY)
       }.values.map { it.toString() }
     }.first()
+  }
+
+  /** 登录相关存储 **/
+
+  // 存储用户登录信息的键
+  private val USER_LOGIN_KEY = stringPreferencesKey(Constants.USER_LOGIN_KEY)
+
+  /**
+   * 读取用户信息
+   */
+  suspend fun getUserLoginInformation(): String {
+    return dataStore.data.map { it[USER_LOGIN_KEY] ?: "" }.first()
+  }
+
+  /**
+   * 保存用户信息
+   */
+  suspend fun saveUserLoginInformation(jsonString: String) {
+    dataStore.edit { it[USER_LOGIN_KEY] = jsonString }
   }
 }

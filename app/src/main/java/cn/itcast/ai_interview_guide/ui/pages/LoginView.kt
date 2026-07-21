@@ -1,5 +1,6 @@
 package cn.itcast.ai_interview_guide.ui.pages
 
+import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -15,6 +16,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.OutlinedTextField
@@ -27,6 +29,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -41,6 +44,8 @@ import cn.itcast.ai_interview_guide.ui.theme.BasicColor
   var username by remember { mutableStateOf("hmheima") }
   var password by remember { mutableStateOf("Hmheima%123") }
   var isAgree by remember { mutableStateOf(false) }  // 协议勾选状态
+
+  val mContext = LocalContext.current
 
   Column(Modifier.fillMaxSize()) {
     // 导航栏
@@ -86,6 +91,23 @@ import cn.itcast.ai_interview_guide.ui.theme.BasicColor
           "隐私政策", fontSize = 14.sp, color = BasicColor.MainColor,
           modifier = Modifier.clickable { /* 跳转隐私 */ })
       }
+    }
+
+    Button({
+        // 前端校验
+        when {
+          username.isBlank() -> Toast.makeText(mContext, "用户名不能为空", Toast.LENGTH_SHORT).show()
+          password.isBlank() -> Toast.makeText(mContext, "密码不能为空", Toast.LENGTH_SHORT).show()
+          !isAgree -> Toast.makeText(mContext, "请勾选已阅读并同意", Toast.LENGTH_SHORT).show()
+          else -> {}
+        }
+      }, Modifier.fillMaxWidth().padding(36.dp).height(44.dp), shape = RoundedCornerShape(4.dp), colors = ButtonDefaults.buttonColors(BasicColor.MainColor)) {
+      Text("立即登录", color = BasicColor.White, fontSize = 16.sp)
+    }
+
+    // 其他登录方式
+    Column(Modifier.fillMaxWidth().padding(top = 70.dp, bottom = 100.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+      Text("其他登录方式", fontSize = 14.sp, color = BasicColor.Gray01)
     }
   }
 }

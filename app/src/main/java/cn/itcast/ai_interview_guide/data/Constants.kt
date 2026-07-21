@@ -11,9 +11,10 @@ object Constants {
   const val BASIC_CONTENT_TYPE = "application/json"
   const val PREFERENCES_DATA_STORE_KEY = "cn.itcast.ai_interview_guide"
   const val SEARCH_HISTORY_KEY = "search_"
+  const val USER_LOGIN_KEY = "user_login"
 
   // 接口
   const val QUESTION_CATEGORY_API = "question/type"
   const val QUESTION_LIST_API = "question/list"
-
+  const val LOGIN_API = "login"
 }

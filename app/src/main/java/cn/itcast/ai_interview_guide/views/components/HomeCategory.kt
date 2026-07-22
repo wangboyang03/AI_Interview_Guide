@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.SecondaryScrollableTabRow
 import androidx.compose.material3.Tab
@@ -24,6 +25,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -48,6 +50,12 @@ import cn.itcast.ai_interview_guide.viewmodels.HomeViewModel
 
   // var activeIndex by remember { mutableIntStateOf(0) } // 二级Tab选中的激活索引双向绑定
   val activatedIndex by homeViewModel.activatedIndex.collectAsState()
+  // 下拉刷新与上拉加载
+  val isRefreshing by remember { mutableStateOf(false) }
+  val lazyListState = rememberLazyListState()
+  val isCompletedLoading by homeViewModel.isCompletedLoading.collectAsState()
+  val isLoadingMore by homeViewModel.isLoadingMore.collectAsState()
+
   Column(Modifier.fillMaxSize()) {
     SecondaryScrollableTabRow(activatedIndex, Modifier.height(44.dp), edgePadding = 0.dp, indicator = {}, divider = {
       HorizontalDivider(thickness = 0.5.dp, color = Colors.GrayBorder)

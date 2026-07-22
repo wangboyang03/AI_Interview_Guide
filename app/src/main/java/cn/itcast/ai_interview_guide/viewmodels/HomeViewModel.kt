@@ -48,8 +48,20 @@ class HomeViewModel: ViewModel() {
         val response = HttpClient.request {
           HttpClient.api.getQuestionItemListApi(currentCategoryId, 10, null, null, 1, 10)
         }
-        _questionItemList.value = response.rows // 返回接口数据
-        pageCount = 1
+        // 支持加载更多
+        if (pageCount == 1) {
+          _questionItemList.value = response.rows // 返回接口数据
+        } else {
+          _questionItemList.value += response.rows // 上拉加载场景下 追加更多数据
+        }
+        // 根据接口返回总页数 判断分页情况
+        if (pageCount >= response.pageTotal) {
+          // 本地页码已经到达接口总数量 肯定没有更多页数了 就认为加载完毕了
+          _isCompletedLoading.value = true
+        } else {
+          pageCount++
+        }
+        // pageCount = 1
       } catch (error: Exception) {
         error.message
         error.printStackTrace()
@@ -70,6 +82,22 @@ class HomeViewModel: ViewModel() {
 
   fun refreshQuestionListData() {
     pageCount = 1
+    _isCompletedLoading.value = false // 刷新数据场景下需要将状态重置 确保下一轮能够正常请求
     getQuestionItemList()
+  }
+
+  // 上拉加载
+  private val _isCompletedLoading = MutableStateFlow(false) // 列表数据完全加载完毕
+  val isCompletedLoading = _isCompletedLoading.asStateFlow()
+
+  private val _isLoadingMore = MutableStateFlow(false) // 正在加载更多
+  val isLoadingMore = _isLoadingMore.asStateFlow()
+
+  fun getMoreQuestionItemData() {
+    // 先判断是否正在加载中或者没有更多数据
+    if (_isCompletedLoading.value || _isLoadingMore.value) return
+    _isLoadingMore.value = true // 阀门控制
+    getQuestionItemList()
+    // _isLoadingMore.value = false
   }
 }

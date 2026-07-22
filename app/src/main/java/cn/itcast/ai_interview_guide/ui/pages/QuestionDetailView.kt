@@ -19,26 +19,49 @@ import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import cn.itcast.ai_interview_guide.ui.components.NavigationTopBar
 import cn.itcast.ai_interview_guide.ui.components.QuestionTag
 import cn.itcast.ai_interview_guide.ui.theme.BasicColor
+import cn.itcast.ai_interview_guide.viewmodels.QuestionViewModel
 
 @Composable fun QuestionDetailView(navController: NavController, itemId: String, list: List<String>) {
+  val questionViewModel: QuestionViewModel = viewModel()
+  val response by questionViewModel.response.collectAsState()
+  val loading by questionViewModel.loading.collectAsState()
+
+  LaunchedEffect(list) {
+    // 只执行一次 初始化列表 索引
+    questionViewModel.getCurrentQuestionInList(itemId, list)
+  }
+
+  LaunchedEffect(itemId) {
+    // id发生变化需要重新拉取数据
+    questionViewModel.getCurrentQuestionDetail(itemId)
+  }
+
+
   Column(Modifier.fillMaxSize()) {
     NavigationTopBar("试题详情", false, onBack = { navController.popBackStack() })
     SectionTitle("题目：")
-    Text("请简述 ArkUI 的声明式开发范式和命令式开发范式的区别？", Modifier.fillMaxWidth().padding(16.dp), maxLines = 2, overflow = TextOverflow.Ellipsis)
+    Text(response.stem, Modifier.fillMaxWidth().padding(16.dp), maxLines = 2, overflow = TextOverflow.Ellipsis)
 
     Row(Modifier.fillMaxWidth().padding(bottom = 16.dp, start = 16.dp, end = 16.dp), verticalAlignment = Alignment.CenterVertically) {
-      QuestionTag(label = "ArkUI")
+      /*QuestionTag(label = "ArkUI")*/
+      response.stage.forEach {
+        QuestionTag(label = it)
+      }
       Spacer(Modifier.width(12.dp))
-      QuestionTag(difficulty = 3)
+      QuestionTag(response.difficulty)
       Spacer(Modifier.weight(1f))
 
       // 更多图标

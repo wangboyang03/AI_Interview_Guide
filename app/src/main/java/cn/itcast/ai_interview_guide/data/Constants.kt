@@ -18,4 +18,8 @@ object Constants {
   const val QUESTION_LIST_API = "question/list"
   const val LOGIN_API = "login"
   const val REFRESH_TOKEN_API = "refreshToken"
+  const val QUERY_QUESTION_DETAIL_API = "question/{id}"
+  const val QUESTION_OPTIONS_API = "question/opt"
+  const val QUESTION_UN_OPTIONS_API = "question/unOpt"
+
 }

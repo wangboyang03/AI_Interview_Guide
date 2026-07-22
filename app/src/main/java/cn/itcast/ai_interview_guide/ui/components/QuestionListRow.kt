@@ -1,5 +1,6 @@
 package cn.itcast.ai_interview_guide.ui.components
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -19,8 +20,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import cn.itcast.ai_interview_guide.data.models.Rows
 
-@Composable fun QuestionListRow(item: Rows) {
-  Column(Modifier.fillMaxSize().padding(15.dp)) {
+@Composable fun QuestionListRow(item: Rows, onClick: () -> Unit = {}) {
+  Column(Modifier.fillMaxSize().padding(15.dp).clickable { onClick() }) {
     Row() {
       // 题目标签
       QuestionTag(item.difficulty?.toInt() ?: 0)

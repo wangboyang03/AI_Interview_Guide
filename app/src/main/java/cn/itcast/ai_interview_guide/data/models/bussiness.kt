@@ -1,6 +1,12 @@
 package cn.itcast.ai_interview_guide.data.models
 
+import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.descriptors.PrimitiveKind
+import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
+import kotlinx.serialization.descriptors.SerialDescriptor
+import kotlinx.serialization.encoding.Decoder
+import kotlinx.serialization.encoding.Encoder
 
 /**
  * 响应公共体
@@ -23,3 +29,21 @@ import kotlinx.serialization.Serializable
    */
   val success: Boolean
 )
+
+object FlexibleIntSerializer : KSerializer<Int> {
+  override val descriptor: SerialDescriptor =
+    PrimitiveSerialDescriptor("FlexibleInt", PrimitiveKind.INT)
+
+  override fun serialize(encoder: Encoder, value: Int) = encoder.encodeInt(value)
+  override fun deserialize(decoder: Decoder): Int {
+    return try {
+      decoder.decodeInt()
+    } catch (e: Exception) {
+      try {
+        decoder.decodeString().toInt()
+      } catch (e2: Exception) {
+        0
+      }
+    }
+  }
+}

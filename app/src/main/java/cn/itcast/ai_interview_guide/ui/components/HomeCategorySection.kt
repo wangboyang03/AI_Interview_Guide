@@ -43,6 +43,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import cn.itcast.ai_interview_guide.R
 import cn.itcast.ai_interview_guide.data.models.SortType
+import cn.itcast.ai_interview_guide.ui.navigation.RouterMap
 import cn.itcast.ai_interview_guide.ui.theme.BasicColor
 import cn.itcast.ai_interview_guide.viewmodels.HomePageViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -119,7 +120,10 @@ import kotlinx.coroutines.flow.MutableStateFlow
       // 试题列表 通过lazyListState监听列表滚动
       LazyColumn(Modifier.fillMaxSize().background(BasicColor.White), lazyListState) {
         items(questionList) { item ->
-          QuestionListRow(item)
+          QuestionListRow(item, {
+            // navController.navigate(RouterMap.QUESTION_DETAIL_VIEW)
+            navController.navigate(RouterMap.questionDetailView(item.id, questionList.map { it.id }))
+          })
           HorizontalDivider(Modifier.padding(horizontal = 16.dp), 0.5.dp, BasicColor.GrayBackground)
         }
 

@@ -4,11 +4,15 @@ import cn.itcast.ai_interview_guide.data.Constants
 import cn.itcast.ai_interview_guide.data.models.LoginRequest
 import cn.itcast.ai_interview_guide.data.models.LoginResponse
 import cn.itcast.ai_interview_guide.data.models.QuestionCategoryResponse
+import cn.itcast.ai_interview_guide.data.models.QuestionDetailResponse
 import cn.itcast.ai_interview_guide.data.models.QuestionListResponse
+import cn.itcast.ai_interview_guide.data.models.QuestionOptionsRequest
 import cn.itcast.ai_interview_guide.data.models.ResponseData
+import kotlinx.serialization.json.JsonElement
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
+import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface ApiService {
@@ -33,4 +37,20 @@ interface ApiService {
    * 登录
    */
   @POST(Constants.LOGIN_API) suspend fun getUserLoginInformation(@Body params: LoginRequest): ResponseData<LoginResponse>
+
+  /**
+   * 查询试题/面经详情信息
+   */
+  @GET(Constants.QUERY_QUESTION_DETAIL_API) suspend fun getQuestionDetailData(@Path("id")id: String): ResponseData<QuestionDetailResponse>
+
+  /**
+   * 收藏、点赞试题或者面经
+   */
+  @POST(Constants.QUESTION_OPTIONS_API) suspend fun operationQuestionDetailOptions(@Body params: QuestionOptionsRequest): ResponseData<JsonElement>
+
+  /**
+   * 取消收藏、点赞试题或者面经
+   */
+  @POST(Constants.QUESTION_UN_OPTIONS_API) suspend fun unOperationQuestionDetailOptions(@Body params: QuestionOptionsRequest): ResponseData<JsonElement>
+
 }

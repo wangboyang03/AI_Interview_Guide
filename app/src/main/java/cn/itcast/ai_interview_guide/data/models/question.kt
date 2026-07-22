@@ -113,3 +113,37 @@ enum class PlanSceneName(val value: String) {
     }
   }
 }
+
+/**
+ * 获取试题/面经详情信息
+ */
+@Serializable data class QuestionDetailResponse(
+  val id: String = "",
+  val stem: String = "",           // 题干
+  val difficulty: Int = 0,         // 难度
+  @Serializable(with = FlexibleIntSerializer::class)
+  val likeCount: Int = 0,          // 点赞数（兼容 Int/String）
+  @Serializable(with = FlexibleIntSerializer::class)
+  val views: Int = 0,              // 浏览数（兼容 Int/String）
+  val answer: String = "",         // 答案（HTML 格式）
+  val collectFlag: Int = 0,        // 是否收藏 0-否 1-是
+  val likeFlag: Int = 0,           // 是否点赞 0-否 1-是
+  val stage: List<String> = emptyList()  // 所属模块标签
+)
+
+@Serializable data class QuestionOptionsRequest (
+  /**
+   * 试题id
+   */
+  val id: String,
+
+  /**
+   * 1点赞2收藏
+   */
+  val optType: Int,
+
+  /**
+   * 0面试题1面经
+   */
+  val type: Int? = 0
+)

@@ -131,6 +131,12 @@ class TokenAuthenticator: Authenticator {
             Token = newToken
             UserAuthManager.currentUser.value.token = newToken
             UserAuthManager.currentUser.value.refreshToken = newRefreshToken
+            // 重新持久化存储用户信息
+            val user = UserAuthManager.getCurrentUser().copy(
+              token = newToken,
+              refreshToken = newRefreshToken
+            )
+            UserAuthManager.setUserInformation(user)
           }
         }
         // 把之前错误的请求重新发出去

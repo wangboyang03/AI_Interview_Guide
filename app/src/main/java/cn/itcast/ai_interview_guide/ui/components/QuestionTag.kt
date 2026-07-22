@@ -18,7 +18,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import cn.itcast.ai_interview_guide.ui.theme.BasicColor
 
-@Composable fun QuestionTag(difficulty: Int = 0, label: String = "未知", labelColor: Color = BasicColor.White) {
+@Composable fun QuestionTag(difficulty: Int = 0, label: String = "未知", labelColor: Color = BasicColor.MainColor) {
   val TagList = when(difficulty) {
     1,2 -> "简单" to BasicColor.Green
     3,4 -> "一般" to BasicColor.Blue

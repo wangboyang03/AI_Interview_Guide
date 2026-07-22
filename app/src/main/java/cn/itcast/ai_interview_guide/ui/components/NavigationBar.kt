@@ -25,9 +25,11 @@ import androidx.core.view.WindowCompat
 import androidx.navigation.NavController
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.navArgument
 import cn.itcast.ai_interview_guide.R
 import cn.itcast.ai_interview_guide.data.models.TabsResponse
 import cn.itcast.ai_interview_guide.ui.navigation.RouterMap
@@ -36,6 +38,7 @@ import cn.itcast.ai_interview_guide.ui.pages.HomePageView
 import cn.itcast.ai_interview_guide.ui.pages.LoginView
 import cn.itcast.ai_interview_guide.ui.pages.MineView
 import cn.itcast.ai_interview_guide.ui.pages.ProfileEditView
+import cn.itcast.ai_interview_guide.ui.pages.QuestionDetailView
 import cn.itcast.ai_interview_guide.ui.pages.SearchPage
 import cn.itcast.ai_interview_guide.ui.pages.SettingsView
 import cn.itcast.ai_interview_guide.utils.UserAuthManager
@@ -128,6 +131,15 @@ import cn.itcast.ai_interview_guide.utils.UserAuthManager
     }
     composable(RouterMap.SETTINGS) {
       SettingsView()
+    }
+    composable(RouterMap.QUESTION_DETAIL_VIEW, listOf(navArgument("list") {
+      type = NavType.StringType;
+      defaultValue = ""
+    })) {
+      val itemId = it.arguments?.getString("itemId") ?: ""
+      val listParams = it.arguments?.getString("list") ?: ""
+      val list = if (listParams.isNotEmpty()) listParams.split(",") else listOf(itemId)
+      QuestionDetailView(navController, itemId, list)
     }
   }
 }

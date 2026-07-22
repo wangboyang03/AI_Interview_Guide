@@ -20,10 +20,10 @@ import kotlinx.serialization.Serializable
   val tagName: String
 )
 
-@Serializable data class QuestionListResponse(
-  val pageTotal: Int? = null,
-  val total: Int? = null,
-  val rows: List<Row>? = null
+@Serializable data class QuestionListResponse<T>(
+  val pageTotal: Int,
+  val total: Int,
+  val rows: List<T>
 )
 
 @Serializable data class Row(

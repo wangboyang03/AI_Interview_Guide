@@ -37,21 +37,23 @@ import cn.itcast.ai_interview_guide.R
 import cn.itcast.ai_interview_guide.models.Row
 import cn.itcast.ai_interview_guide.viewmodels.HomeViewModel
 
-@Composable fun HomeCategory(homeViewModel: HomeViewModel = viewModel()) {
+@Composable fun HomeCategory(homeViewModel: HomeViewModel) {
   val questionCategoryList by homeViewModel.questionCategoryList.collectAsState()
+  val questionItemList by homeViewModel.questionItemList.collectAsState()
 
   LaunchedEffect(Unit) {
     homeViewModel.getQuestionCategoryList()
   }
 
-  var activeIndex by remember { mutableIntStateOf(0) } // 二级Tab选中的激活索引双向绑定
+  // var activeIndex by remember { mutableIntStateOf(0) } // 二级Tab选中的激活索引双向绑定
+  val activatedIndex by homeViewModel.activatedIndex.collectAsState()
   Column(Modifier.fillMaxSize()) {
-    SecondaryScrollableTabRow(activeIndex, Modifier.height(44.dp), edgePadding = 0.dp, indicator = {}, divider = {
+    SecondaryScrollableTabRow(activatedIndex, Modifier.height(44.dp), edgePadding = 0.dp, indicator = {}, divider = {
       HorizontalDivider(thickness = 0.5.dp, color = Colors.GrayBorder)
     }) {
       questionCategoryList.forEachIndexed { index, response ->
-        Tab(activeIndex == index, { activeIndex = index }) {
-          val selected = activeIndex == index
+        Tab(activatedIndex == index, { homeViewModel.selectedQuestionCategory(index) }) {
+          val selected = activatedIndex == index
           val indicatorWidth by animateDpAsState(if (selected) 20.dp else 0.dp, tween(durationMillis = if (selected) 300 else 0), "indicator_width")
           Row(/*Modifier.padding(start = if (index == 0) 16.dp else 0.dp, end = if (mockData.size == index + 1) 16.dp else 0.dp), */verticalAlignment = Alignment.CenterVertically) {
             Box(contentAlignment = Alignment.BottomCenter) {
@@ -67,16 +69,9 @@ import cn.itcast.ai_interview_guide.viewmodels.HomeViewModel
     }
     Box(Modifier.fillMaxSize()) {
       if (questionCategoryList.isNotEmpty()) {
-        val currentItem = questionCategoryList[activeIndex]
-        // 临时数据
-        val mockItems = listOf(
-          Row("1", "ArkUI的容器组件有哪些？说说它们的使用场景", 3, 14, 16211, 1),
-          Row("2", "ArkTS中this的常用场景及使用注意事项", 1, 7, 6726, 0),
-          Row("3", "鸿蒙应用的生命周期管理如何实现", 5, 22, 8342, 1),
-        )
         // TODO: 试题列表
         LazyColumn(Modifier.fillMaxSize().background(Colors.GrayBackground)) {
-          items(mockItems) {
+          items(questionItemList) {
             QuestionListItem(it)
             HorizontalDivider(Modifier.padding(horizontal = 16.dp), 0.5.dp, Colors.GrayBorder)
           }

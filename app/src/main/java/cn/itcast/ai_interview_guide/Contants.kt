@@ -9,4 +9,5 @@ object Constants {
 
   /** 接口 **/
   const val QUESTION_CATEGORY_API: String = "question/type" // 首页/项目-获取分类
+  const val QUESTION_LIST_API: String = "question/list" // 查询试题/面经列表
 }

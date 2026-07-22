@@ -23,7 +23,7 @@ import cn.itcast.ai_interview_guide.models.Row
     Row(verticalAlignment = Alignment.CenterVertically) {
       QuestionTag(row.difficulty)
       Spacer(Modifier.width(5.dp))
-      Text(row.stem, Modifier.weight(1f), fontSize = 15.sp, fontWeight = FontWeight.Medium, maxLines = 1, overflow = TextOverflow.Ellipsis)
+      Text(row.stem.trim(), Modifier.weight(1f), fontSize = 15.sp, fontWeight = FontWeight.Medium, maxLines = 1, overflow = TextOverflow.Ellipsis)
     }
     Row {
       Text("点赞 ${row.likeCount}", fontSize = 13.sp, color = Colors.Gray01)

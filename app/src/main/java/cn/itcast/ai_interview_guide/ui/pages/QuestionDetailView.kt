@@ -1,6 +1,11 @@
 package cn.itcast.ai_interview_guide.ui.pages
 
+import android.annotation.SuppressLint
+import android.os.Build
+import android.webkit.WebView
+import android.webkit.WebViewClient
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -35,6 +40,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import cn.itcast.ai_interview_guide.ui.components.NavigationTopBar
@@ -103,9 +109,37 @@ import cn.itcast.ai_interview_guide.viewmodels.QuestionViewModel
     }
     Box(Modifier.fillMaxWidth().height(8.dp).background(BasicColor.GrayBackground))
     SectionTitle("答案：")
-    Box(Modifier.weight(1f).fillMaxWidth(), Alignment.Center) {
-      Text("暂无答案", color = BasicColor.Gray01)
+    if (response.answer.isNotEmpty()) {
+      AndroidView(
+        {
+          WebView(it).apply {
+            webViewClient = WebViewClient()
+            settings.javaScriptEnabled = true
+          }
+        },
+        Modifier.weight(1f).fillMaxWidth(),
+        {
+          val html =
+            """
+               <html>
+                 <head>
+                   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                   <style>
+                     body { font-size:14px; padding:16px; line-height:1.6; }
+                   </style>
+                 </head>
+                 <body>${response.answer}</body>
+               </html>
+             """.trimIndent()
+          it.loadDataWithBaseURL(null, html, "text/html", "UTF-8", null)
+        }
+      )
+    } else {
+      Box(Modifier.weight(1f).fillMaxWidth(), Alignment.Center) {
+        Text("暂无答案", color = BasicColor.Gray01)
+      }
     }
+
     Row(Modifier.fillMaxWidth().height(44.dp), Arrangement.Center, Alignment.CenterVertically) {
       Row(Modifier.clickable {
         if (canISkipPrevious) questionViewModel.switchQuestionDetailPage(-1) else Toast.makeText(mContext, "没有更多题目了", Toast.LENGTH_SHORT).show()

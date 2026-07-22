@@ -46,4 +46,12 @@ class QuestionViewModel(application: Application): AndroidViewModel(application)
       }
     }
   }
+
+  // 上一题下一题的切换
+  fun switchQuestionDetailPage(step: Int) {
+    val nextIndex = _currentQuestionIndex.value + step // 加一下一题 减一上一题
+    if (nextIndex < 0 || nextIndex >= itemIdFromList.size) return
+    _currentQuestionIndex.value = nextIndex
+    getCurrentQuestionDetail(itemIdFromList[nextIndex])
+  }
 }

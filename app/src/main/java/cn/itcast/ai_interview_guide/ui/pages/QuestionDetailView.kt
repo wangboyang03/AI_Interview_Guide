@@ -1,6 +1,8 @@
 package cn.itcast.ai_interview_guide.ui.pages
 
+import android.widget.Toast
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -24,6 +26,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -38,6 +41,12 @@ import cn.itcast.ai_interview_guide.viewmodels.QuestionViewModel
   val questionViewModel: QuestionViewModel = viewModel()
   val response by questionViewModel.response.collectAsState()
   val loading by questionViewModel.loading.collectAsState()
+
+  val currentQuestionIndex by questionViewModel.currentQuestionIndex.collectAsState()
+  val mContext = LocalContext.current
+
+  val canISkipPrevious = currentQuestionIndex > 0
+  val canISkipNext = currentQuestionIndex < list.size - 1
 
   LaunchedEffect(list) {
     // 只执行一次 初始化列表 索引
@@ -73,14 +82,18 @@ import cn.itcast.ai_interview_guide.viewmodels.QuestionViewModel
       Text("暂无答案", color = BasicColor.Gray01)
     }
     Row(Modifier.fillMaxWidth().height(44.dp), Arrangement.Center, Alignment.CenterVertically) {
-      Row(verticalAlignment = Alignment.CenterVertically) {
-        Icon(Icons.AutoMirrored.Filled.ArrowBack, null, Modifier.size(20.dp), tint = BasicColor.Gray01)
-        Text(" 上一题", color = BasicColor.Gray01)
+      Row(Modifier.clickable {
+        if (canISkipPrevious) questionViewModel.switchQuestionDetailPage(-1) else Toast.makeText(mContext, "没有更多题目了", Toast.LENGTH_SHORT).show()
+      }, verticalAlignment = Alignment.CenterVertically) {
+        Icon(Icons.AutoMirrored.Filled.ArrowBack, null, Modifier.size(20.dp), tint = if (canISkipPrevious) BasicColor.Gray03 else BasicColor.Gray01)
+        Text(" 上一题", color = if (canISkipPrevious) BasicColor.Gray03 else BasicColor.Gray01)
       }
       Spacer(Modifier.width(80.dp))
-      Row(verticalAlignment = Alignment.CenterVertically) {
-        Text("下一题 ", color = BasicColor.Gray03)
-        Icon(Icons.AutoMirrored.Filled.ArrowForward, null, Modifier.size(20.dp), tint = BasicColor.Gray03)
+      Row(Modifier.clickable {
+        if (canISkipNext) questionViewModel.switchQuestionDetailPage(1) else Toast.makeText(mContext, "没有更多题目了", Toast.LENGTH_SHORT).show()
+      }, verticalAlignment = Alignment.CenterVertically) {
+        Text("下一题 ", color = if (canISkipNext) BasicColor.Gray03 else BasicColor.Gray01)
+        Icon(Icons.AutoMirrored.Filled.ArrowForward, null, Modifier.size(20.dp), tint = if (canISkipNext) BasicColor.Gray03 else BasicColor.Gray01)
       }
     }
   }

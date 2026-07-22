@@ -47,6 +47,8 @@ import cn.itcast.ai_interview_guide.ui.components.NavigationTopBar
 import cn.itcast.ai_interview_guide.ui.components.QuestionTag
 import cn.itcast.ai_interview_guide.ui.theme.BasicColor
 import cn.itcast.ai_interview_guide.viewmodels.QuestionViewModel
+import kotlinx.serialization.builtins.serializer
+import kotlinx.serialization.json.Json
 
 @Composable fun QuestionDetailView(navController: NavController, itemId: String, list: List<String>) {
   val questionViewModel: QuestionViewModel = viewModel()
@@ -61,6 +63,7 @@ import cn.itcast.ai_interview_guide.viewmodels.QuestionViewModel
 
   // 菜单
   var isShowMenu by remember { mutableStateOf(false) }
+  var pageLoaded by remember { mutableStateOf(false) }
 
   LaunchedEffect(list) {
     // 只执行一次 初始化列表 索引
@@ -113,25 +116,24 @@ import cn.itcast.ai_interview_guide.viewmodels.QuestionViewModel
       AndroidView(
         {
           WebView(it).apply {
-            webViewClient = WebViewClient()
             settings.javaScriptEnabled = true
+            webViewClient = object : WebViewClient() {
+              override fun onPageFinished(view: WebView?, url: String?) {
+                super.onPageFinished(view, url)
+                pageLoaded = true
+                val encoded = Json.encodeToString(String.serializer(), response.answer)
+                view?.evaluateJavascript("writeHtml($encoded)", null)
+              }
+            }
+            loadUrl("file:///android_asset/question.html")
           }
         },
         Modifier.weight(1f).fillMaxWidth(),
         {
-          val html =
-            """
-               <html>
-                 <head>
-                   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                   <style>
-                     body { font-size:14px; padding:16px; line-height:1.6; }
-                   </style>
-                 </head>
-                 <body>${response.answer}</body>
-               </html>
-             """.trimIndent()
-          it.loadDataWithBaseURL(null, html, "text/html", "UTF-8", null)
+          if (pageLoaded) {
+            val encoded = Json.encodeToString(String.serializer(), response.answer)
+            it.evaluateJavascript("writeHtml($encoded)", null)
+          }
         }
       )
     } else {

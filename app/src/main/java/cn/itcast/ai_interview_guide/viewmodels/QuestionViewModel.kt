@@ -1,9 +1,13 @@
 package cn.itcast.ai_interview_guide.viewmodels
 
 import android.app.Application
+import android.util.Log
+import android.util.Log.e
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import cn.itcast.ai_interview_guide.data.Constants
 import cn.itcast.ai_interview_guide.data.models.QuestionDetailResponse
+import cn.itcast.ai_interview_guide.data.models.QuestionOptionsRequest
 import cn.itcast.ai_interview_guide.utils.HttpClient
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -53,5 +57,58 @@ class QuestionViewModel(application: Application): AndroidViewModel(application)
     if (nextIndex < 0 || nextIndex >= itemIdFromList.size) return
     _currentQuestionIndex.value = nextIndex
     getCurrentQuestionDetail(itemIdFromList[nextIndex])
+  }
+
+  // 点赞或取消点赞切换
+  fun switchLikeIt() {
+    viewModelScope.launch {
+      val currentItem = _response.value
+      val params = QuestionOptionsRequest(currentItem.id, 1)
+      try {
+        if (currentItem.likeFlag == 1) {
+          // 此时认为已经点赞过了 应该取消点赞
+          HttpClient.request {
+            HttpClient.api.unOperationQuestionDetailOptions(params)
+          }
+        } else {
+          // 此时认为没有点赞 应该去点赞
+          HttpClient.request {
+            HttpClient.api.operationQuestionDetailOptions(params)
+          }
+        }
+        // 更新本地数据
+        _response.value = currentItem.copy(likeFlag = if (currentItem.likeFlag == 1) 0 else 1)
+      } catch (error: Exception) {
+        error.message ?: Log.e(Constants.TAG, "操作失败")
+        _response.value = currentItem
+        error.printStackTrace()
+      }
+    }
+  }
+
+  // 收藏或取消收藏切换
+  fun switchCollectionIt() {
+    viewModelScope.launch {
+      val currentItem = _response.value
+      val params = QuestionOptionsRequest(currentItem.id, 2)
+      try {
+        if (currentItem.collectFlag == 1) {
+          // 此时认为已经收藏 应该取消收藏
+          HttpClient.request {
+            HttpClient.api.unOperationQuestionDetailOptions(params)
+          }
+        } else {
+          // 此时认为没有收藏 应该去收藏
+          HttpClient.request {
+            HttpClient.api.operationQuestionDetailOptions(params)
+          }
+        }
+        _response.value = currentItem.copy(collectFlag = if (currentItem.collectFlag == 1) 0 else 1)
+      } catch (error: Exception) {
+        error.message ?: Log.e(Constants.TAG, "操作失败")
+        _response.value = currentItem
+        error.printStackTrace()
+      }
+    }
   }
 }

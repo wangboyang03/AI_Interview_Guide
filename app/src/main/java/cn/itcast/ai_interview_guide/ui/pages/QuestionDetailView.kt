@@ -18,12 +18,17 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -47,6 +52,9 @@ import cn.itcast.ai_interview_guide.viewmodels.QuestionViewModel
 
   val canISkipPrevious = currentQuestionIndex > 0
   val canISkipNext = currentQuestionIndex < list.size - 1
+
+  // 菜单
+  var isShowMenu by remember { mutableStateOf(false) }
 
   LaunchedEffect(list) {
     // 只执行一次 初始化列表 索引
@@ -74,7 +82,24 @@ import cn.itcast.ai_interview_guide.viewmodels.QuestionViewModel
       Spacer(Modifier.weight(1f))
 
       // 更多图标
-      Icon(Icons.Default.MoreVert, null, Modifier.size(20.dp), BasicColor.Gray03)
+      Box {
+        Icon(Icons.Default.MoreVert, null, Modifier.size(20.dp).clickable {
+          isShowMenu = true
+        }, BasicColor.Gray03)
+        DropdownMenu(isShowMenu, { isShowMenu = false }) {
+          DropdownMenuItem({ Text(if (response.likeFlag == 0) "点赞" else "取消点赞") }, {
+            questionViewModel.switchLikeIt()
+            isShowMenu = false
+            Toast.makeText(mContext, if (response.likeFlag == 0) "点赞成功" else "取消点赞成功", Toast.LENGTH_SHORT).show()
+          })
+          DropdownMenuItem({ Text(if (response.collectFlag == 0) "收藏" else "取消收藏") }, {
+            questionViewModel.switchCollectionIt()
+            isShowMenu = false
+            Toast.makeText(mContext, if (response.collectFlag == 0) "收藏成功" else "取消收藏成功", Toast.LENGTH_SHORT).show()
+          })
+          DropdownMenuItem({ Text("点我反馈🍨") }, { isShowMenu = false })
+        }
+      }
     }
     Box(Modifier.fillMaxWidth().height(8.dp).background(BasicColor.GrayBackground))
     SectionTitle("答案：")

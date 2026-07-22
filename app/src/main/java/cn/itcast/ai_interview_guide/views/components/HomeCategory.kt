@@ -33,11 +33,12 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import cn.itcast.ai_interview_guide.R
 import cn.itcast.ai_interview_guide.models.Row
 import cn.itcast.ai_interview_guide.viewmodels.HomeViewModel
 
-@Composable fun HomeCategory(homeViewModel: HomeViewModel) {
+@Composable fun HomeCategory(navController: NavController, homeViewModel: HomeViewModel) {
   val questionCategoryList by homeViewModel.questionCategoryList.collectAsState()
   val questionItemList by homeViewModel.questionItemList.collectAsState()
 

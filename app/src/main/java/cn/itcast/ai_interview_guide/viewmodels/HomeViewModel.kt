@@ -1,10 +1,8 @@
 package cn.itcast.ai_interview_guide.viewmodels
 
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import cn.itcast.ai_interview_guide.models.QuestionCategoryResponse
-import cn.itcast.ai_interview_guide.models.QuestionListResponse
 import cn.itcast.ai_interview_guide.models.Row
 import cn.itcast.ai_interview_guide.utils.HttpClient
 import kotlinx.coroutines.flow.MutableStateFlow

@@ -69,3 +69,15 @@ enum class PlanSceneName(val value: String) {
     }
   }
 }
+
+/**
+ * 试题排序
+ */
+enum class SortType(val value: Int) {
+  Default(0),
+  DifficultyLow(10),
+  DifficultyHigh(11),
+  ViewLow(20),
+  ViewHigh(21),
+  Commend(30)
+}

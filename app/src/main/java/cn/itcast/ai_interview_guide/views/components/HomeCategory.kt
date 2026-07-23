@@ -4,6 +4,7 @@ import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -36,6 +37,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
@@ -65,6 +68,8 @@ import kotlinx.coroutines.launch
   val isCompletedLoading by homeViewModel.isCompletedLoading.collectAsState()
   val isLoadingMore by homeViewModel.isLoadingMore.collectAsState()
 
+  var showBindSheet by remember { mutableStateOf(false) } // 半模态弹层
+
   LaunchedEffect(lazyListState) {
     // 监听触底加载更多
     snapshotFlow {
@@ -78,28 +83,42 @@ import kotlinx.coroutines.launch
   }
 
   Column(Modifier.fillMaxSize()) {
-    SecondaryScrollableTabRow(activatedIndex, Modifier.height(44.dp), edgePadding = 0.dp, indicator = {}, divider = {
-      HorizontalDivider(thickness = 0.5.dp, color = Colors.GrayBorder)
-    }) {
-      questionCategoryList.forEachIndexed { index, response ->
-        Tab(activatedIndex == index, {
-          homeViewModel.selectedQuestionCategory(index)
-          coroutineScope.launch {
-            lazyListState.scrollToItem(0) // 每次切换页签应该让列表滚动到最顶部
-          }
-        }) {
-          val selected = activatedIndex == index
-          val indicatorWidth by animateDpAsState(if (selected) 20.dp else 0.dp, tween(durationMillis = if (selected) 300 else 0), "indicator_width")
-          Row(/*Modifier.padding(start = if (index == 0) 16.dp else 0.dp, end = if (mockData.size == index + 1) 16.dp else 0.dp), */verticalAlignment = Alignment.CenterVertically) {
-            Box(contentAlignment = Alignment.BottomCenter) {
-              Text(response.name, Modifier.height(44.dp).wrapContentHeight(Alignment.CenterVertically), fontSize = 15.sp, color = if (selected) Colors.Black else Colors.Gray01)
-              Box(Modifier.width(indicatorWidth).height(2.dp).background(Colors.Black))
+    // TODO: 分类Tab栏 筛选半模态
+    Box(Modifier.fillMaxWidth()) {
+      SecondaryScrollableTabRow(activatedIndex, Modifier.height(44.dp), edgePadding = 0.dp, indicator = {}, divider = {
+        HorizontalDivider(thickness = 0.5.dp, color = Colors.GrayBorder)
+      }) {
+        questionCategoryList.forEachIndexed { index, response ->
+          Tab(activatedIndex == index, {
+            homeViewModel.selectedQuestionCategory(index)
+            coroutineScope.launch {
+              lazyListState.scrollToItem(0) // 每次切换页签应该让列表滚动到最顶部
             }
-            if (response.displayNewestFlag == 1) {
-              Image(painterResource(id = R.drawable.ic_home_new), null, Modifier.size(32.dp, 14.dp).padding(start = 4.dp), contentScale = ContentScale.Fit)
+          }) {
+            val selected = activatedIndex == index
+            val indicatorWidth by animateDpAsState(if (selected) 20.dp else 0.dp, tween(durationMillis = if (selected) 300 else 0), "indicator_width")
+            Row(/*Modifier.padding(start = if (index == 0) 16.dp else 0.dp, end = if (mockData.size == index + 1) 16.dp else 0.dp), */verticalAlignment = Alignment.CenterVertically) {
+              Box(contentAlignment = Alignment.BottomCenter) {
+                Text(response.name, Modifier.height(44.dp).wrapContentHeight(Alignment.CenterVertically), fontSize = 15.sp, color = if (selected) Colors.Black else Colors.Gray01)
+                Box(Modifier.width(indicatorWidth).height(2.dp).background(Colors.Black))
+              }
+              if (response.displayNewestFlag == 1) {
+                Image(painterResource(id = R.drawable.ic_home_new), null, Modifier.size(32.dp, 14.dp).padding(start = 4.dp), contentScale = ContentScale.Fit)
+              }
             }
           }
         }
+      }
+
+      Box(Modifier.align(Alignment.TopEnd).size(48.dp).clickable {
+        showBindSheet = true
+      }, Alignment.Center) {
+        Box(Modifier.fillMaxSize().background(Brush.horizontalGradient(listOf(Color.Transparent, Colors.White), 0f)))
+        Image(painterResource(R.drawable.ic_home_filter), null, Modifier.size(24.dp), contentScale = ContentScale.Fit)
+      }
+
+      if (showBindSheet) {
+        FilterBindSheet({ showBindSheet = false }, questionCategoryList)
       }
     }
     Box(Modifier.fillMaxSize()) {

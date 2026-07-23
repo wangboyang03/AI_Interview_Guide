@@ -9,6 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import cn.itcast.ai_interview_guide.views.pages.Main
+import cn.itcast.ai_interview_guide.views.pages.SearchPageView
 import cn.itcast.ai_interview_guide.views.theme.AI_Interview_GuideTheme
 
 class MainActivity : ComponentActivity() {
@@ -17,7 +18,7 @@ class MainActivity : ComponentActivity() {
     enableEdgeToEdge()
     setContent {
       AI_Interview_GuideTheme {
-        Main()
+        SearchPageView()
       }
     }
   }

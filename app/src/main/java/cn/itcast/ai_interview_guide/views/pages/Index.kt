@@ -47,6 +47,9 @@ import cn.itcast.ai_interview_guide.views.routes.RouterMap
       composable(RouterMap.PROJECT) {}
       composable(RouterMap.EXPERIENCE) {}
       composable(RouterMap.MINE) {}
+      composable(RouterMap.SEARCHPAGE) {
+        SearchPageView(navController)
+      }
     }
   }
 }

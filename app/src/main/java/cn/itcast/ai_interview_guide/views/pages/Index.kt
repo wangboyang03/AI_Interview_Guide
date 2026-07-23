@@ -35,7 +35,7 @@ import cn.itcast.ai_interview_guide.views.routes.RouterMap
     TabItemResponse("面经", R.drawable.tabbar_interview_fill, R.drawable.tabbar_interview, RouterMap.EXPERIENCE),
     TabItemResponse("我的", R.drawable.tabbar_mine_fill, R.drawable.tabbar_mine, RouterMap.MINE)
   )
-  val selectedState = currentDestination?.hierarchy?.any { it.route == response[0].routerName } == true
+  // val selectedState = currentDestination?.hierarchy?.any { it.route == response[0].routerName } == true
 
   Scaffold(bottomBar = {
     Navigation(response, navController, currentDestination)

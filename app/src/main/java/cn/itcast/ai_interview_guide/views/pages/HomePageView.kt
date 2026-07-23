@@ -16,9 +16,10 @@ import cn.itcast.ai_interview_guide.views.components.HomeCategory
 import cn.itcast.ai_interview_guide.views.components.NavigationBar
 import cn.itcast.ai_interview_guide.views.components.SkeletonComponent
 import cn.itcast.ai_interview_guide.views.components.Swiper
+import cn.itcast.ai_interview_guide.views.routes.RouterMap
 
 @Composable fun HomePageView(navController: NavController, homeViewModel: HomeViewModel = viewModel()) {
-  val swiperImages = listOf<Int>(R.drawable.banner_ai, R.drawable.banner_pj, R.drawable.banner_qa)
+  val swiperImages = listOf(R.drawable.banner_ai, R.drawable.banner_pj, R.drawable.banner_qa)
   val category by homeViewModel.questionCategoryList.collectAsState()
   val activatedIndex by homeViewModel.activatedIndex.collectAsState()
   val loading by homeViewModel.loading.collectAsState()
@@ -32,7 +33,9 @@ import cn.itcast.ai_interview_guide.views.components.Swiper
   }
 
   Column(Modifier.fillMaxSize().background(Colors.GrayBackground)) {
-    NavigationBar()
+    NavigationBar(onClick = {
+      navController.navigate(RouterMap.SEARCHPAGE)
+    })
     Swiper(swiperImages)
     //每日一题 日历卡片
     if (loading && category.isEmpty()) {

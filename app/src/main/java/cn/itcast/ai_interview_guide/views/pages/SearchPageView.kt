@@ -2,6 +2,7 @@ package cn.itcast.ai_interview_guide.views.pages
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -52,7 +53,7 @@ import cn.itcast.ai_interview_guide.utils.HttpClient
 import cn.itcast.ai_interview_guide.views.components.QuestionListItem
 import kotlinx.coroutines.launch
 
-@Composable fun SearchPageView(navController: NavHostController? = null) {
+@Composable fun SearchPageView(navController: NavHostController) {
   val mockKeywords = listOf("Kotlin协程", "Handler原理", "Compose状态管理")
   /*val mockResults = listOf(
     Row(id = "1", stem = "Kotlin协程的挂起机制是什么？", difficulty = 3),
@@ -78,14 +79,11 @@ import kotlinx.coroutines.launch
       }, textStyle = TextStyle(fontSize = 12.sp), singleLine = true, leadingIcon = {
         Image(painterResource(R.drawable.ic_common_search), null)
       }, colors = TextFieldDefaults.colors(unfocusedIndicatorColor = Color.Transparent, focusedIndicatorColor = Color.Transparent, unfocusedContainerColor = Color.Transparent, focusedContainerColor = Color.Transparent))*/
-      Box(
-        Modifier.weight(1f).height(32.dp).clip(CircleShape).background(Colors.GrayBackground)
-          .padding(horizontal = 12.dp), Alignment.CenterStart
-      ) {
+      Box(Modifier.weight(1f).height(32.dp).clip(CircleShape).background(Colors.GrayBackground).padding(horizontal = 14.dp), Alignment.CenterStart) {
         BasicTextField(value, {
           value = it
           if (it.isEmpty()) isAlreadySearched = false
-        }, Modifier.fillMaxWidth(), singleLine = true, textStyle = TextStyle(fontSize = 12.sp), decorationBox = {
+        }, Modifier.fillMaxWidth(), singleLine = true, textStyle = TextStyle(fontSize = 14.sp), decorationBox = {
             Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
               // 左侧搜索图标
               Image(painterResource(R.drawable.ic_common_search), null, Modifier.size(16.dp))
@@ -126,7 +124,9 @@ import kotlinx.coroutines.launch
         )
       }
       Spacer(Modifier.width(16.dp))
-      Text("取消", fontSize = 15.sp, fontWeight = FontWeight.Medium, color = Colors.Blue)
+      Text("取消", Modifier.clickable {
+        navController.popBackStack()
+      }, fontSize = 15.sp, fontWeight = FontWeight.Medium, color = Colors.Blue)
     }
     HorizontalDivider(thickness = 0.5.dp, color = Colors.GrayBorder)
     // 搜索列表或者搜索历史词

@@ -2,6 +2,7 @@ package cn.itcast.ai_interview_guide.views.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -33,7 +34,7 @@ import androidx.compose.ui.unit.sp
 import cn.itcast.ai_interview_guide.R
 
 @Preview(showBackground = true)
-@Composable fun NavigationBar(boxHeight: Int = 32, placeholder: String = "搜索题目", placeholderColor: Color = Colors.Gray02, backgroundColor: Color = Colors.GrayBorder, layoutWeightValue: Float = 1f) {
+@Composable fun NavigationBar(boxHeight: Int = 32, placeholder: String = "搜索题目", placeholderColor: Color = Colors.Gray02, backgroundColor: Color = Colors.GrayBorder, layoutWeightValue: Float = 1f, onClick: () -> Unit = {}) {
   val statusBarHeight = WindowInsets.statusBars.asPaddingValues().calculateTopPadding()
   Column(Modifier.fillMaxWidth().background(Colors.GrayBackground)) {
     Spacer(Modifier.height(statusBarHeight))
@@ -42,7 +43,7 @@ import cn.itcast.ai_interview_guide.R
       Image(painterResource(R.drawable.ic_home_scan), null)
       Spacer(Modifier.width(10.dp))
       // 中部搜索框
-      Row(Modifier.weight(layoutWeightValue).fillMaxWidth().height(boxHeight.dp).clip(CircleShape).background(backgroundColor), horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
+      Row(Modifier.weight(layoutWeightValue).fillMaxWidth().height(boxHeight.dp).clip(CircleShape).clickable { onClick() }.background(backgroundColor), horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
         Image(painterResource(R.drawable.ic_common_search), null, Modifier.size(14.dp), colorFilter = ColorFilter.tint(placeholderColor))
         Spacer(Modifier.width(5.dp))
         Text(placeholder, fontSize = 14.sp, color = placeholderColor)

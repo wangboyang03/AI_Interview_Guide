@@ -18,7 +18,7 @@ class MainActivity : ComponentActivity() {
     enableEdgeToEdge()
     setContent {
       AI_Interview_GuideTheme {
-        SearchPageView()
+        Main()
       }
     }
   }

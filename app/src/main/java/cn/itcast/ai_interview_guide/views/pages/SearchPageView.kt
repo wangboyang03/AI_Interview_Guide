@@ -24,6 +24,7 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -130,9 +131,21 @@ import kotlinx.coroutines.launch
     HorizontalDivider(thickness = 0.5.dp, color = Colors.GrayBorder)
     // 搜索列表或者搜索历史词
     if (isAlreadySearched) {
-      LazyColumn {
-        items(searchResults) {
-          QuestionListItem(it)
+      if (isSearching) {
+        // 正在搜索中
+        Box(Modifier.fillMaxSize(), Alignment.Center) {
+          CircularProgressIndicator()
+        }
+      } else if (searchResults.isEmpty()) {
+        // 没有搜索结果
+        Box(Modifier.fillMaxSize(), Alignment.Center) {
+          Text("没有找到相关试题", color = Colors.Gray01)
+        }
+      } else {
+        LazyColumn {
+          items(searchResults) {
+            QuestionListItem(it)
+          }
         }
       }
     } else {

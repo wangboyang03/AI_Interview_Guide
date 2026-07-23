@@ -21,13 +21,12 @@ import cn.itcast.ai_interview_guide.views.components.Swiper
   val swiperImages = listOf<Int>(R.drawable.banner_ai, R.drawable.banner_pj, R.drawable.banner_qa)
   val category by homeViewModel.questionCategoryList.collectAsState()
   val activatedIndex by homeViewModel.activatedIndex.collectAsState()
-  val questionItemList by homeViewModel.questionItemList.collectAsState()
   val loading by homeViewModel.loading.collectAsState()
 
   LaunchedEffect(category.size, activatedIndex) {
     // 当首页题目分类列表切换索引或发生变化时重新刷新数据
     if (category.isNotEmpty()) {
-      homeViewModel.refreshQuestionListData()
+      homeViewModel.refreshQuestionListData(false)
     }
   }
 

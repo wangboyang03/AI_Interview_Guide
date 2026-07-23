@@ -66,7 +66,10 @@ class HomeViewModel: ViewModel() {
         error.message
         error.printStackTrace()
       } finally {
+        // 由方法内部处理状态幂等性
         _loading.value = false
+        _isLoadingMore.value = false
+        _isRefreshing.value = false
       }
     }
   }
@@ -80,15 +83,18 @@ class HomeViewModel: ViewModel() {
     refreshQuestionListData() // 重新刷新数据
   }
 
-  fun refreshQuestionListData() {
-    pageCount = 1
-    _isCompletedLoading.value = false // 刷新数据场景下需要将状态重置 确保下一轮能够正常请求
-    getQuestionItemList()
-  }
-
   // 上拉加载
   private val _isCompletedLoading = MutableStateFlow(false) // 列表数据完全加载完毕
   val isCompletedLoading = _isCompletedLoading.asStateFlow()
+  private val _isRefreshing = MutableStateFlow(false)
+  val isRefreshing = _isRefreshing.asStateFlow()
+
+  fun refreshQuestionListData(isFirstLoad: Boolean = true) {
+    pageCount = 1
+    _isRefreshing.value = isFirstLoad
+    _isCompletedLoading.value = false // 刷新数据场景下需要将状态重置 确保下一轮能够正常请求
+    getQuestionItemList()
+  }
 
   private val _isLoadingMore = MutableStateFlow(false) // 正在加载更多
   val isLoadingMore = _isLoadingMore.asStateFlow()

@@ -43,10 +43,9 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import cn.itcast.ai_interview_guide.R
-import cn.itcast.ai_interview_guide.models.Row
+import cn.itcast.ai_interview_guide.models.SortType
 import cn.itcast.ai_interview_guide.viewmodels.HomeViewModel
 import kotlinx.coroutines.launch
 
@@ -69,6 +68,9 @@ import kotlinx.coroutines.launch
   val isLoadingMore by homeViewModel.isLoadingMore.collectAsState()
 
   var showBindSheet by remember { mutableStateOf(false) } // 半模态弹层
+  var filterCategoryIndex by remember { mutableIntStateOf(0) } // 用于二级分类项与弹窗内联动
+  var filterSortType by remember { mutableStateOf(SortType.Default) } // 外部接收的筛选过滤条件
+  val questionSortType by homeViewModel.questionSortType.collectAsState() // 是处理筛选逻辑和弹层内筛选交互的中间变量
 
   LaunchedEffect(lazyListState) {
     // 监听触底加载更多
@@ -111,14 +113,20 @@ import kotlinx.coroutines.launch
       }
 
       Box(Modifier.align(Alignment.TopEnd).size(48.dp).clickable {
+        // 打开半模态弹层 将当前所选中的分类页签索引给弹层里的分类索引
         showBindSheet = true
+        filterCategoryIndex = activatedIndex
+        filterSortType = questionSortType
       }, Alignment.Center) {
         Box(Modifier.fillMaxSize().background(Brush.horizontalGradient(listOf(Color.Transparent, Colors.White), 0f)))
         Image(painterResource(R.drawable.ic_home_filter), null, Modifier.size(24.dp), contentScale = ContentScale.Fit)
       }
 
       if (showBindSheet) {
-        FilterBindSheet({ showBindSheet = false }, questionCategoryList)
+        FilterBindSheet({ showBindSheet = false }, questionCategoryList, filterCategoryIndex, { filterCategoryIndex = it }, filterSortType, { filterSortType = it }, {
+          showBindSheet = false
+          homeViewModel.confirmFilterSorting(filterCategoryIndex, filterSortType)
+        })
       }
     }
     Box(Modifier.fillMaxSize()) {

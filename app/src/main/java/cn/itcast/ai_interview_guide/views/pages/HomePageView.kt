@@ -22,11 +22,12 @@ import cn.itcast.ai_interview_guide.views.components.Swiper
   val category by homeViewModel.questionCategoryList.collectAsState()
   val activatedIndex by homeViewModel.activatedIndex.collectAsState()
   val loading by homeViewModel.loading.collectAsState()
+  val questionSortType by homeViewModel.questionSortType.collectAsState()
 
-  LaunchedEffect(category.size, activatedIndex) {
-    // 当首页题目分类列表切换索引或发生变化时重新刷新数据
+  LaunchedEffect(category.size, activatedIndex, questionSortType) {
+    // 当首页题目分类列表切换索引、排序或数据发生变化时重新刷新列表
     if (category.isNotEmpty()) {
-      homeViewModel.refreshQuestionListData(false)
+      homeViewModel.refreshQuestionListData()
     }
   }
 

@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import cn.itcast.ai_interview_guide.models.QuestionCategoryResponse
 import cn.itcast.ai_interview_guide.models.Row
+import cn.itcast.ai_interview_guide.models.SortType
 import cn.itcast.ai_interview_guide.utils.HttpClient
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -39,14 +40,14 @@ class HomeViewModel: ViewModel() {
   private var pageCount = 1 // 当前页码
 
   fun getQuestionItemList() {
-    _loading.value = true
     viewModelScope.launch {
       try {
         // 获取当前分类的id
         // val currentCategoryId = _questionCategoryList.value.getOrNull(0)?.id ?: return@launch
         val currentCategoryId = _questionCategoryList.value.getOrNull(_activatedIndex.value)?.id ?: return@launch
         val response = HttpClient.request {
-          HttpClient.api.getQuestionItemListApi(currentCategoryId, 10, null, null, 1, 10)
+          // 添加排序规则 _questionSortType.value拿到枚举 通过.value拿到枚举值
+          HttpClient.api.getQuestionItemListApi(currentCategoryId, 10, null, _questionSortType.value.value, 1, 10)
         }
         // 支持加载更多
         if (pageCount == 1) {
@@ -86,16 +87,6 @@ class HomeViewModel: ViewModel() {
   // 上拉加载
   private val _isCompletedLoading = MutableStateFlow(false) // 列表数据完全加载完毕
   val isCompletedLoading = _isCompletedLoading.asStateFlow()
-  private val _isRefreshing = MutableStateFlow(false)
-  val isRefreshing = _isRefreshing.asStateFlow()
-
-  fun refreshQuestionListData(isFirstLoad: Boolean = true) {
-    pageCount = 1
-    _isRefreshing.value = isFirstLoad
-    _isCompletedLoading.value = false // 刷新数据场景下需要将状态重置 确保下一轮能够正常请求
-    getQuestionItemList()
-  }
-
   private val _isLoadingMore = MutableStateFlow(false) // 正在加载更多
   val isLoadingMore = _isLoadingMore.asStateFlow()
 
@@ -105,5 +96,28 @@ class HomeViewModel: ViewModel() {
     _isLoadingMore.value = true // 阀门控制
     getQuestionItemList()
     // _isLoadingMore.value = false
+  }
+
+  // 下拉刷新
+  private val _isRefreshing = MutableStateFlow(false)
+  val isRefreshing = _isRefreshing.asStateFlow()
+
+  fun refreshQuestionListData(isFirstLoad: Boolean = false) {
+    pageCount = 1
+    _loading.value = true
+    _isRefreshing.value = isFirstLoad
+    _isCompletedLoading.value = false // 刷新数据场景下需要将状态重置 确保下一轮能够正常请求
+    getQuestionItemList()
+  }
+
+  // 筛选题目列表分类 浏览量和难度排序
+  private val _questionSortType = MutableStateFlow(SortType.Default)
+  val questionSortType = _questionSortType.asStateFlow()
+
+  fun confirmFilterSorting(selectedIndex: Int, sort: SortType) {
+    // 点击面板完成按钮
+    _activatedIndex.value = selectedIndex // 将所选标签索引给二级Tab页签索引
+    _questionSortType.value = sort // 将排序方式赋给局部变量
+    refreshQuestionListData()
   }
 }

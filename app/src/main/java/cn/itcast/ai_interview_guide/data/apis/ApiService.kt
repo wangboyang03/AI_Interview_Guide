@@ -1,6 +1,7 @@
 package cn.itcast.ai_interview_guide.data.apis
 
 import cn.itcast.ai_interview_guide.data.Constants
+import cn.itcast.ai_interview_guide.data.models.LearnTimeRequest
 import cn.itcast.ai_interview_guide.data.models.LoginRequest
 import cn.itcast.ai_interview_guide.data.models.LoginResponse
 import cn.itcast.ai_interview_guide.data.models.QuestionCategoryResponse
@@ -57,5 +58,5 @@ interface ApiService {
   /**
    * 学习信息-统计时长埋点
    */
-  @POST(Constants.LEARN_TIME_TRACKING_API) suspend fun postLearnTimeTracking(@Body timeList: Map<String, List<TimeList>>): ResponseData<JsonElement>
+  @POST(Constants.LEARN_TIME_TRACKING_API) suspend fun postLearnTimeTracking(@Body params: LearnTimeRequest): ResponseData<JsonElement>
 }

@@ -149,6 +149,10 @@ enum class PlanSceneName(val value: String) {
 )
 
 // 埋点
+@Serializable data class LearnTimeRequest(
+  val timeList: List<TimeList>
+)
+
 @Serializable data class TimeList (
   /**
    * 结束时间（毫秒）

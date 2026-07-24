@@ -2,6 +2,7 @@ package cn.itcast.ai_interview_guide.utils
 
 import android.content.Context
 import cn.itcast.ai_interview_guide.data.local.UserPreferences
+import cn.itcast.ai_interview_guide.data.models.LearnTimeRequest
 import cn.itcast.ai_interview_guide.data.models.TimeList
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.serializer
@@ -46,13 +47,14 @@ object TrackingManager {
     // 反序列化
     val trackingList = JSON.decodeFromString<List<TimeList>>(trackingString)
 
+    // 包装接口所需请求参数
+    val requestParams = LearnTimeRequest(trackingList)
+
     // 完成上报
     if (trackingList.size >= 5 || (isForce && trackingList.isNotEmpty())) {
       // 已经超过五条数据
       try {
-        HttpClient.request {
-          HttpClient.api.postLearnTimeTracking(mapOf("timeList" to trackingList))
-        }
+        HttpClient.api.postLearnTimeTracking(requestParams)
         // 此时认为上报成功 需要清除本地埋点记录
         preferences.clearTrackingData()
       } catch (error: Exception) {

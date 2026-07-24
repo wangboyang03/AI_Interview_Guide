@@ -64,7 +64,8 @@ class AudioViewModel(application: Application): AndroidViewModel(application) {
       // 获取用户id
       val userId = UserAuthManager.getCurrentUser().id
       // 根据用户id到数据库表中查询
-      dataBase.audioDataDao().queryByUserId(userId)
+      val list = dataBase.audioDataDao().queryByUserId(userId)
+      _audioDataList.value = list
     }
   }
 }

@@ -2,6 +2,7 @@ plugins {
   alias(libs.plugins.android.application)
   alias(libs.plugins.kotlin.compose)
   alias(libs.plugins.kotlin.serialization)
+  alias(libs.plugins.ksp)  // KSP 插件，Room 编译期生成代码
 }
 
 android {
@@ -82,5 +83,5 @@ dependencies {
   /** Room **/
   implementation(libs.room.runtime)
   implementation(libs.room.ktx)
-  // ksp(libs.room.compiler)  // KSP 在编译时生成 DAO 实现类
+  ksp(libs.room.compiler)  // KSP 处理器，编译期生成 DAO 实现类
 }

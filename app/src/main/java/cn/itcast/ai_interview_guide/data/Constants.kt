@@ -1,5 +1,7 @@
 package cn.itcast.ai_interview_guide.data
 
+import cn.itcast.ai_interview_guide.data.local.AppDataBase.AudioDataBase
+
 
 object Constants {
   const val BASE_URL = "https://api-harmony-teach.itheima.net/hm/"
@@ -13,6 +15,8 @@ object Constants {
   const val SEARCH_HISTORY_KEY = "search_"
   const val USER_LOGIN_KEY = "user_login"
   const val BUSINESS_TRACKING_KEY = "time_tracking_key"
+  const val RECORDING_STORAGE_ENTITY_NAME = "audio_ai_interview_guide"
+  const val AUDIO_DATABASE_NAME = "interview_audio.db"
 
   // 接口
   const val QUESTION_CATEGORY_API = "question/type"

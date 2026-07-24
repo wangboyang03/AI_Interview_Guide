@@ -1,7 +1,10 @@
 package cn.itcast.ai_interview_guide.ui.pages
 
+import android.R.attr.duration
+import android.R.attr.name
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -22,6 +25,8 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -31,24 +36,24 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import cn.itcast.ai_interview_guide.data.local.AppDataBase.AudioDataEntity
 import cn.itcast.ai_interview_guide.ui.components.NavigationTopBar
 import cn.itcast.ai_interview_guide.ui.theme.BasicColor
+import cn.itcast.ai_interview_guide.utils.UserAuthManager
+import cn.itcast.ai_interview_guide.viewmodels.AudioViewModel
 
-@Composable fun AudioView(navController: NavController) {
-  // 模拟数据（后续接入 Room 数据库后替换）
-  data class MockAudio(
-    val name: String,
-    val duration: Long,
-    val size: Long
-  )
-  val mockList = listOf(
-    MockAudio("2025年06月01日_10时30分00秒", 30000L, 102400L),
-    MockAudio("2025年06月01日_14时20分00秒", 15000L, 51200L),
-  )
+@Composable fun AudioView(navController: NavController, viewModel: AudioViewModel = viewModel()) {
+  val audioDataList by viewModel.audioDataList.collectAsState()
+
+  LaunchedEffect(Unit) {
+    viewModel.getAudioDataList()
+  }
 
   Column(Modifier.fillMaxSize()) {
     // 导航
@@ -58,22 +63,31 @@ import cn.itcast.ai_interview_guide.ui.theme.BasicColor
 
     // 录音列表
     LazyColumn(Modifier.weight(1f)) {
-      items(mockList) {
-        AudioItemRow(it.name, it.duration, it.size, {})
+      items(audioDataList) {
+        AudioItemRow(it, {})
         HorizontalDivider(thickness = 0.5.dp, color = BasicColor.GrayBackground)
       }
     }
 
     // 3录制
-    RecordingControlSection(onRecordEnd = { name, duration, size -> })
+    RecordingControlSection(onRecordEnd = { name, duration, size ->
+      viewModel.addAudioItemByAudioDataList(AudioDataEntity(
+        userId = UserAuthManager.getCurrentUser().id,
+        name = name,
+        path = "",
+        duration = duration,
+        size = size,
+        createTime = System.currentTimeMillis()
+      ))
+    })
   }
 }
 
-@Composable fun AudioItemRow(name: String, duration: Long, size: Long, onDelete: () -> Unit) {
+@Composable fun AudioItemRow(item: AudioDataEntity, onDelete: () -> Unit) {
   Row(Modifier.fillMaxWidth().padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
-    Column(modifier = Modifier.weight(1f)) {
-      Text(name, fontSize = 16.sp, fontWeight = FontWeight.Medium)
-      Text("时长: ${duration / 1000}秒 | 大小: ${size / 1024}KB", fontSize = 12.sp, color = BasicColor.Gray01)
+    Column(Modifier.weight(1f)) {
+      Text(item.name, fontSize = 16.sp, fontWeight = FontWeight.Medium)
+      Text("时长: ${item.duration / 1000}秒 | 大小: ${item.size / 1024}KB", fontSize = 12.sp, color = BasicColor.Gray01)
     }
     Text("删除", Modifier.clickable { onDelete() }, Color(0xFFFF0033), fontSize = 14.sp)
   }
@@ -102,8 +116,22 @@ import cn.itcast.ai_interview_guide.ui.theme.BasicColor
     Spacer(Modifier.height(20.dp))
 
     // 录音按钮
-    Box(Modifier.size(50.dp).background(if (recording) BasicColor.Blue else BasicColor.Black).clip(RoundedCornerShape(25.dp)).clickable {
-
+    Box(Modifier.size(50.dp).background(if (recording) BasicColor.Blue else BasicColor.Black).clip(RoundedCornerShape(25.dp)).pointerInput(Unit) {
+      detectTapGestures(
+        onPress = {
+          // 开始录音
+          recording = true
+          startTime = System.currentTimeMillis()
+          val released = tryAwaitRelease()
+          if (recording) {
+            // 结束录音
+            recording = false
+            val duration = System.currentTimeMillis() - startTime // 计算录音时长
+            val name = java.text.SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss秒", java.util.Locale.getDefault()).format(java.util.Date(startTime))
+            onRecordEnd(name, duration, 0L)
+          }
+        }
+      )
     }, contentAlignment = Alignment.Center) {
       Icon(Icons.Default.Mic, null, tint = BasicColor.White)
     }

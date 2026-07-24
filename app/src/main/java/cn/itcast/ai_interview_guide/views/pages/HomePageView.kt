@@ -34,7 +34,9 @@ import cn.itcast.ai_interview_guide.views.routes.RouterMap
 
   Column(Modifier.fillMaxSize().background(Colors.GrayBackground)) {
     NavigationBar(onClick = {
-      navController.navigate(RouterMap.SEARCHPAGE)
+      navController.navigate(RouterMap.SEARCHPAGE) {
+        launchSingleTop = true
+      }
     })
     Swiper(swiperImages)
     //每日一题 日历卡片

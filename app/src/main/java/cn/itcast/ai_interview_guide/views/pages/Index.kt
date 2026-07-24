@@ -1,6 +1,9 @@
 package cn.itcast.ai_interview_guide.views.pages
 
+import android.R.id.tabs
 import android.annotation.SuppressLint
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.NavigationBar
@@ -36,11 +39,14 @@ import cn.itcast.ai_interview_guide.views.routes.RouterMap
     TabItemResponse("我的", R.drawable.tabbar_mine_fill, R.drawable.tabbar_mine, RouterMap.MINE)
   )
   // val selectedState = currentDestination?.hierarchy?.any { it.route == response[0].routerName } == true
+  val isNeedShownTabBar = response.any { it.routerName == currentDestination?.route }
 
   Scaffold(bottomBar = {
-    Navigation(response, navController, currentDestination)
+    if (isNeedShownTabBar) {
+      Navigation(response, navController, currentDestination)
+    }
   }) {
-    NavHost(navController, RouterMap.HOMEPAGE, Modifier.padding(bottom = it.calculateBottomPadding())) {
+    NavHost(navController, RouterMap.HOMEPAGE, Modifier.padding(bottom = it.calculateBottomPadding()), enterTransition = { EnterTransition.None }, exitTransition = { ExitTransition.None }, popEnterTransition = { EnterTransition.None }, popExitTransition = { ExitTransition.None }) {
       composable(RouterMap.HOMEPAGE) {
         HomePageView(navController)
       }

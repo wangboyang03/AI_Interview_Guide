@@ -6,6 +6,8 @@ object Constants {
   const val BASE_URL: String = "https://api-harmony-teach.itheima.net/hm/"
   const val BASIC_CONTENT_TYPE = "application/json"
   const val SUCCESS_CODE: Int = 10000
+  const val PREFERENCES_DATASTORE_KEY = "ai_interview_guide_storage"
+  const val SEARCH_RECORD_STORAGE_KEY = "search_"
 
   /** 接口 **/
   const val QUESTION_CATEGORY_API: String = "question/type" // 首页/项目-获取分类

@@ -30,11 +30,10 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -46,27 +45,27 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import cn.itcast.ai_interview_guide.R
-import cn.itcast.ai_interview_guide.models.Row
-import cn.itcast.ai_interview_guide.utils.HttpClient
+import cn.itcast.ai_interview_guide.viewmodels.SearchViewModel
 import cn.itcast.ai_interview_guide.views.components.QuestionListItem
 import kotlinx.coroutines.launch
 
-@Composable fun SearchPageView(navController: NavHostController) {
-  val mockKeywords = listOf("Kotlin协程", "Handler原理", "Compose状态管理")
-  /*val mockResults = listOf(
-    Row(id = "1", stem = "Kotlin协程的挂起机制是什么？", difficulty = 3),
-    Row(id = "2", stem = "suspend函数和普通函数的区别？", difficulty = 2)
-  )*/
-
-  var isAlreadySearched by remember { mutableStateOf(false) } // 正在搜索中显示搜索列表
-  var value by remember { mutableStateOf("") } // 输入框文本
-  var searchResults by remember { mutableStateOf<List<Row>>(emptyList()) } // 搜索结果集合
-  var isSearching by remember { mutableStateOf(false) } // 正在搜索中 阀门控制
+@Composable fun SearchPageView(navController: NavHostController, viewModel: SearchViewModel = viewModel()) {
+  val isAlreadySearched by viewModel.isAlreadySearched.collectAsState() // 正在搜索中显示搜索列表
+  val keyword by viewModel.keyword.collectAsState() // 输入框文本
+  val isSearching by viewModel.isSearching.collectAsState() // 正在搜索中 阀门控制
+  val searchResults by viewModel.searchResultList.collectAsState() // 搜索结果集合
+  val searchKeywordList by viewModel.searchKeywordList.collectAsState() // 持久化中的搜索记录列表
 
   val keyboardController = LocalSoftwareKeyboardController.current // 创建软键盘控制器实例
   val coroutineScope = rememberCoroutineScope()
+
+  // 一进来先从磁盘获取本地搜索历史记录
+  LaunchedEffect(Unit) {
+    viewModel.getAllSearchRecordList()
+  }
 
   Column(Modifier.fillMaxSize()) {
     // 搜索框 取消按钮
@@ -80,10 +79,7 @@ import kotlinx.coroutines.launch
         Image(painterResource(R.drawable.ic_common_search), null)
       }, colors = TextFieldDefaults.colors(unfocusedIndicatorColor = Color.Transparent, focusedIndicatorColor = Color.Transparent, unfocusedContainerColor = Color.Transparent, focusedContainerColor = Color.Transparent))*/
       Box(Modifier.weight(1f).height(32.dp).clip(CircleShape).background(Colors.GrayBackground).padding(horizontal = 14.dp), Alignment.CenterStart) {
-        BasicTextField(value, {
-          value = it
-          if (it.isEmpty()) isAlreadySearched = false
-        }, Modifier.fillMaxWidth(), singleLine = true, textStyle = TextStyle(fontSize = 14.sp), decorationBox = {
+        BasicTextField(keyword, viewModel::onKeywordChange, Modifier.fillMaxWidth(), singleLine = true, textStyle = TextStyle(fontSize = 14.sp), decorationBox = {
             Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
               // 左侧搜索图标
               Image(painterResource(R.drawable.ic_common_search), null, Modifier.size(16.dp))
@@ -91,7 +87,7 @@ import kotlinx.coroutines.launch
               Spacer(Modifier.width(8.dp))
               // 层叠的提示文本和输入框
               Box(Modifier.weight(1f), Alignment.CenterStart) {
-                if (value.isEmpty()) {
+                if (keyword.isEmpty()) {
                   Text("请输入关键字", fontSize = 12.sp, lineHeight = 32.sp, color = Color.Gray)
                 }
                 it()
@@ -100,23 +96,12 @@ import kotlinx.coroutines.launch
           },
           keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
           keyboardActions = KeyboardActions(onSearch = {
-              if (value.isNotEmpty()) {
+              if (keyword.isNotEmpty()) {
                 keyboardController?.hide() // 先隐藏软键盘
-                val keyword = value // 搜索词 局部变量
                 coroutineScope.launch {
-                  isSearching = true
-                  try {
-                    val response = HttpClient.request {
-                      HttpClient.api.getQuestionItemListApi(0, 10, keyword, null, null, 10)
-                    }
-                    searchResults = response.rows
-                  } catch (error: Exception) {
-                    error.message
-                    searchResults = emptyList() // 列表置空
-                  } finally {
-                    isSearching = false
-                    isAlreadySearched = true // 最后都应该显示搜索列表
-                  }
+                  // 在事件内开启协程 去发请求拿数据渲染 保存一下搜索词
+                  viewModel.getQuestionItemFromCurrentSearchKeyword(keyword)
+                  viewModel.savedCurrentSearchKeyword(keyword)
                 }
               }
             }
@@ -156,7 +141,7 @@ import kotlinx.coroutines.launch
         }
         Spacer(Modifier.height(16.dp))
         FlowRow(Modifier.fillMaxWidth()) {
-          mockKeywords.forEach {
+          searchKeywordList.forEach {
             Row(
               Modifier.padding(end = 16.dp, bottom = 16.dp).clip(RoundedCornerShape(16.dp))
                 .background(Color(0xFFF3F4F5)).padding(12.dp, 8.dp),

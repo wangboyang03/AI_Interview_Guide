@@ -81,4 +81,30 @@ class UserPreferences(context: Context) {
   suspend fun saveUserLoginInformation(jsonString: String) {
     dataStore.edit { it[USER_LOGIN_KEY] = jsonString }
   }
+
+  /** 业务埋点相关存储 **/
+
+  // 存储埋点信息的键
+  private val BUSINESS_TRACKING_KEY = stringPreferencesKey(Constants.BUSINESS_TRACKING_KEY)
+
+  /**
+   * 保存埋点数据
+   */
+  suspend fun savedTrackingData(data: String) {
+    dataStore.edit { it[BUSINESS_TRACKING_KEY] = data }
+  }
+
+  /**
+   * 读取埋点数据
+   */
+  suspend fun getTrackingData(): String {
+    return dataStore.data.map { it[BUSINESS_TRACKING_KEY] ?: "[]" }.first()
+  }
+
+  /**
+   * 清空埋点数据
+   */
+  suspend fun clearTrackingData() {
+    dataStore.edit { it.remove(BUSINESS_TRACKING_KEY) }
+  }
 }

@@ -147,3 +147,21 @@ enum class PlanSceneName(val value: String) {
    */
   val type: Int? = 0
 )
+
+// 埋点
+@Serializable data class TimeList (
+  /**
+   * 结束时间（毫秒）
+   */
+  val endTime: Long,
+
+  /**
+   * 试题id
+   */
+  val questionID: String,
+
+  /**
+   * 开始时间(毫秒)
+   */
+  val startTime: Long
+)

@@ -12,6 +12,7 @@ object Constants {
   const val PREFERENCES_DATA_STORE_KEY = "cn.itcast.ai_interview_guide"
   const val SEARCH_HISTORY_KEY = "search_"
   const val USER_LOGIN_KEY = "user_login"
+  const val BUSINESS_TRACKING_KEY = "time_tracking_key"
 
   // 接口
   const val QUESTION_CATEGORY_API = "question/type"
@@ -21,5 +22,6 @@ object Constants {
   const val QUERY_QUESTION_DETAIL_API = "question/{id}"
   const val QUESTION_OPTIONS_API = "question/opt"
   const val QUESTION_UN_OPTIONS_API = "question/unOpt"
+  const val LEARN_TIME_TRACKING_API = "time/tracking"
 
 }

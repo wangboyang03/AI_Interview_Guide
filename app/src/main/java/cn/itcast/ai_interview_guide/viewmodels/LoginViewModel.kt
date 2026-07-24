@@ -1,10 +1,13 @@
 package cn.itcast.ai_interview_guide.viewmodels
 
 import android.app.Application
+import android.widget.Toast
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.application
 import androidx.lifecycle.viewModelScope
 import cn.itcast.ai_interview_guide.data.models.LoginRequest
 import cn.itcast.ai_interview_guide.utils.HttpClient
+import cn.itcast.ai_interview_guide.utils.TrackingManager
 import cn.itcast.ai_interview_guide.utils.UserAuthManager
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -37,8 +40,11 @@ class LoginViewModel(application: Application): AndroidViewModel(application) {
         }
         // 存储用户信息
         UserAuthManager.setUserInformation(response)
+        // 强制上报埋点
+        TrackingManager.reportCurrentTrackingData(true)
         // 发射登录成功广播
         _loginSuccessEvent.emit(Unit)
+        Toast.makeText(application.applicationContext, "登录成功，触发强制埋点上报", Toast.LENGTH_LONG).show()
       } catch (error: Exception) {
         error.message?.let { _loginErrorEvent.emit(it) }
       } finally {

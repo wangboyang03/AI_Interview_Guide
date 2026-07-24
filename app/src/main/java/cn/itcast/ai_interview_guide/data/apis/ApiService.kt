@@ -8,6 +8,7 @@ import cn.itcast.ai_interview_guide.data.models.QuestionDetailResponse
 import cn.itcast.ai_interview_guide.data.models.QuestionListResponse
 import cn.itcast.ai_interview_guide.data.models.QuestionOptionsRequest
 import cn.itcast.ai_interview_guide.data.models.ResponseData
+import cn.itcast.ai_interview_guide.data.models.TimeList
 import kotlinx.serialization.json.JsonElement
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -53,4 +54,8 @@ interface ApiService {
    */
   @POST(Constants.QUESTION_UN_OPTIONS_API) suspend fun unOperationQuestionDetailOptions(@Body params: QuestionOptionsRequest): ResponseData<JsonElement>
 
+  /**
+   * 学习信息-统计时长埋点
+   */
+  @POST(Constants.LEARN_TIME_TRACKING_API) suspend fun postLearnTimeTracking(@Body timeList: Map<String, List<TimeList>>): ResponseData<JsonElement>
 }

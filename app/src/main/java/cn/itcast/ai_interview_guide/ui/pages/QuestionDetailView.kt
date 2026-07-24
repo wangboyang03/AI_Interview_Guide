@@ -28,11 +28,14 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -46,7 +49,13 @@ import androidx.navigation.NavController
 import cn.itcast.ai_interview_guide.ui.components.NavigationTopBar
 import cn.itcast.ai_interview_guide.ui.components.QuestionTag
 import cn.itcast.ai_interview_guide.ui.theme.BasicColor
+import cn.itcast.ai_interview_guide.utils.TrackingManager
 import cn.itcast.ai_interview_guide.viewmodels.QuestionViewModel
+import coil.request.Disposable
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import kotlinx.serialization.builtins.serializer
 import kotlinx.serialization.json.Json
 
@@ -65,6 +74,9 @@ import kotlinx.serialization.json.Json
   var isShowMenu by remember { mutableStateOf(false) }
   var pageLoaded by remember { mutableStateOf(false) }
 
+  // 埋点时间记录
+  var startTime by remember { mutableLongStateOf(System.currentTimeMillis()) }
+
   LaunchedEffect(list) {
     // 只执行一次 初始化列表 索引
     questionViewModel.getCurrentQuestionInList(itemId, list)
@@ -73,6 +85,21 @@ import kotlinx.serialization.json.Json
   LaunchedEffect(itemId) {
     // id发生变化需要重新拉取数据
     questionViewModel.getCurrentQuestionDetail(itemId)
+    startTime = System.currentTimeMillis()
+  }
+
+  val coroutineScope = rememberCoroutineScope()
+  DisposableEffect(Unit) {
+    // 当页面销毁时触发
+    onDispose {
+      GlobalScope.launch(Dispatchers.IO) {
+        TrackingManager.recordCurrentTrackingData(startTime, System.currentTimeMillis(), itemId)
+        TrackingManager.reportCurrentTrackingData()
+        withContext(Dispatchers.Main) {
+          Toast.makeText(mContext, "触发页面离开时埋点上报", Toast.LENGTH_LONG).show()
+        }
+      }
+    }
   }
 
 
@@ -144,14 +171,29 @@ import kotlinx.serialization.json.Json
 
     Row(Modifier.fillMaxWidth().height(44.dp), Arrangement.Center, Alignment.CenterVertically) {
       Row(Modifier.clickable {
-        if (canISkipPrevious) questionViewModel.switchQuestionDetailPage(-1) else Toast.makeText(mContext, "没有更多题目了", Toast.LENGTH_SHORT).show()
+        if (canISkipPrevious) {
+          // 点击切换题目
+          coroutineScope.launch {
+            TrackingManager.recordCurrentTrackingData(startTime, System.currentTimeMillis(), itemId)
+            startTime = System.currentTimeMillis() // 重置开始时间
+            Toast.makeText(mContext, "触发切换题目埋点记录", Toast.LENGTH_LONG).show()
+          }
+          questionViewModel.switchQuestionDetailPage(-1)
+        } else Toast.makeText(mContext, "没有更多题目了", Toast.LENGTH_SHORT).show()
       }, verticalAlignment = Alignment.CenterVertically) {
         Icon(Icons.AutoMirrored.Filled.ArrowBack, null, Modifier.size(20.dp), tint = if (canISkipPrevious) BasicColor.Gray03 else BasicColor.Gray01)
         Text(" 上一题", color = if (canISkipPrevious) BasicColor.Gray03 else BasicColor.Gray01)
       }
       Spacer(Modifier.width(80.dp))
       Row(Modifier.clickable {
-        if (canISkipNext) questionViewModel.switchQuestionDetailPage(1) else Toast.makeText(mContext, "没有更多题目了", Toast.LENGTH_SHORT).show()
+        if (canISkipNext) {
+          coroutineScope.launch {
+            TrackingManager.recordCurrentTrackingData(startTime, System.currentTimeMillis(), itemId)
+            startTime = System.currentTimeMillis() // 重置开始时间
+            Toast.makeText(mContext, "触发切换题目埋点记录", Toast.LENGTH_LONG).show()
+          }
+          questionViewModel.switchQuestionDetailPage(1)
+        } else Toast.makeText(mContext, "没有更多题目了", Toast.LENGTH_SHORT).show()
       }, verticalAlignment = Alignment.CenterVertically) {
         Text("下一题 ", color = if (canISkipNext) BasicColor.Gray03 else BasicColor.Gray01)
         Icon(Icons.AutoMirrored.Filled.ArrowForward, null, Modifier.size(20.dp), tint = if (canISkipNext) BasicColor.Gray03 else BasicColor.Gray01)

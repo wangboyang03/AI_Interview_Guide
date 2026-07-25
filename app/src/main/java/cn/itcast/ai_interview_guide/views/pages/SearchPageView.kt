@@ -24,6 +24,7 @@ import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
@@ -33,7 +34,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -61,6 +65,8 @@ import kotlinx.coroutines.launch
 
   val keyboardController = LocalSoftwareKeyboardController.current // 创建软键盘控制器实例
   val coroutineScope = rememberCoroutineScope()
+
+  var showDeleteIcon by remember { mutableStateOf(false) }  // 进入编辑模式
 
   // 一进来先从磁盘获取本地搜索历史记录
   LaunchedEffect(Unit) {
@@ -137,7 +143,21 @@ import kotlinx.coroutines.launch
       Column(Modifier.padding(16.dp)) {
         Row(Modifier.fillMaxWidth(), Arrangement.SpaceBetween, Alignment.CenterVertically) {
           Text("搜索记录", fontSize = 15.sp, color = Colors.Gray01)
-          Icon(Icons.Default.Delete, null, Modifier.size(16.dp), Colors.Gray01)
+          if (showDeleteIcon) {
+            Row {
+              Text("全部删除", Modifier.clickable {
+                coroutineScope.launch {
+                  viewModel.clearAllSearchKeyword()
+                }
+              }, fontSize = 14.sp, color = Colors.Gray01)
+              Text(" | ", fontSize = 14.sp, color = Colors.Gray01)
+              Text("完成", Modifier.clickable { showDeleteIcon = false }, fontSize = 14.sp, color = Colors.Gray01)
+            }
+          } else {
+            Icon(Icons.Default.Delete, null, Modifier.size(16.dp).clickable {
+              showDeleteIcon = true
+            }, Colors.Gray01)
+          }
         }
         Spacer(Modifier.height(16.dp))
         FlowRow(Modifier.fillMaxWidth()) {
@@ -148,6 +168,14 @@ import kotlinx.coroutines.launch
               verticalAlignment = Alignment.CenterVertically
             ) {
               Text(it, fontSize = 14.sp, color = Color(0xFF6F6F6F))
+              if (showDeleteIcon) {
+                Spacer(Modifier.width(8.dp))
+                Icon(Icons.Default.Close, null, Modifier.clickable {
+                  coroutineScope.launch {
+                    viewModel.deleteCurrentKeyword(it)
+                  }
+                }.size(12.dp), Color(0xFF878787))
+              }
             }
           }
         }

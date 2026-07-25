@@ -77,4 +77,20 @@ class SearchViewModel(application: Application): AndroidViewModel(application) {
     getAllSearchRecordList() // 保存完成后再获取一次搜索记录列表
     _searchKeywordList.value = currentList
   }
+
+  /**
+   * 删除当前搜索词
+   */
+  suspend fun deleteCurrentKeyword(keyword: String) {
+    preferences.deleteSearchKeyword(keyword)
+    getAllSearchRecordList()
+  }
+
+  /**
+   * 清空所有搜索词
+   */
+  suspend fun clearAllSearchKeyword() {
+    preferences.clearAllSearchKeyword()
+    getAllSearchRecordList()
+  }
 }

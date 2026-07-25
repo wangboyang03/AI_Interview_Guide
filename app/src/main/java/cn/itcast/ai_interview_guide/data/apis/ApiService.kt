@@ -12,9 +12,12 @@ import cn.itcast.ai_interview_guide.data.models.QuestionOptionsRequest
 import cn.itcast.ai_interview_guide.data.models.ResponseData
 import cn.itcast.ai_interview_guide.data.models.TimeList
 import kotlinx.serialization.json.JsonElement
+import okhttp3.MultipartBody
 import retrofit2.http.Body
 import retrofit2.http.GET
+import retrofit2.http.Multipart
 import retrofit2.http.POST
+import retrofit2.http.Part
 import retrofit2.http.Path
 import retrofit2.http.Query
 
@@ -64,5 +67,15 @@ interface ApiService {
   /**
    * 个人中心-完善用户头像和昵称
    */
-  @POST(Constants.USER_PROFILE_CHANGE_API) suspend fun ChanedUserProfile(@Body params: ChangeProfileRequest): ResponseData<JsonElement>
+  @POST(Constants.USER_PROFILE_CHANGE_API) suspend fun changedUserProfile(@Body params: ChangeProfileRequest): ResponseData<JsonElement>
+
+  /**
+   * 个人中心-修改用户头像
+   */
+  @Multipart @POST(Constants.UPLOAD_USER_AVARAT_API) suspend fun changedUserAvatar(@Part file: MultipartBody.Part): ResponseData<JsonElement>
+
+  /**
+   * 获取用户信息
+   */
+  @GET(Constants.GET_USER_INFORMATION_API) suspend fun getUserInformation(): ResponseData<LoginResponse>
 }

@@ -130,7 +130,7 @@ import cn.itcast.ai_interview_guide.utils.UserAuthManager
       ProfileEditView()
     }
     composable(RouterMap.SETTINGS) {
-      SettingsView()
+      SettingsView(navController)
     }
     composable(RouterMap.QUESTION_DETAIL_VIEW, listOf(navArgument("list") {
       type = NavType.StringType;

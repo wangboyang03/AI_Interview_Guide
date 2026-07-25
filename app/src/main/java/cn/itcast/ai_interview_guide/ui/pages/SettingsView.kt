@@ -1,5 +1,6 @@
 package cn.itcast.ai_interview_guide.ui.pages
 
+import android.R.attr.radius
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -14,7 +15,13 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -23,6 +30,12 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import cn.itcast.ai_interview_guide.ui.components.NavigationTopBar
 import cn.itcast.ai_interview_guide.ui.theme.BasicColor
+import cn.itcast.ai_interview_guide.utils.clearCache
+import cn.itcast.ai_interview_guide.utils.formatFileSize
+import cn.itcast.ai_interview_guide.utils.recursivelyCalculateAllFolders
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 @Composable fun SettingsView(navController: NavController) {
   val mContext = LocalContext.current
@@ -33,6 +46,20 @@ import cn.itcast.ai_interview_guide.ui.theme.BasicColor
       "v${_package.versionName}"
     } catch (error: Exception) {
       "v1.0"
+    }
+  }
+
+  // 计算缓存大小
+  var cacheSize by remember { mutableStateOf("0") }
+  val coroutineScope = rememberCoroutineScope()
+  fun caleCacheSize(): String {
+    val currentSize = recursivelyCalculateAllFolders(mContext.cacheDir)
+    return formatFileSize(currentSize)
+  }
+
+  LaunchedEffect(Unit) {
+    cacheSize = withContext(Dispatchers.Default) {
+      caleCacheSize()
     }
   }
 
@@ -52,7 +79,15 @@ import cn.itcast.ai_interview_guide.ui.theme.BasicColor
 
       // 第2组：通用（模拟数据，后续替换）
       SettingsItem("消息推送", radius = 1)
-      SettingsItem("清除应用缓存", radius = 1)
+      SettingsItem("清除应用缓存", value = cacheSize, radius = 1) {
+        coroutineScope.launch {
+          // 先清除缓存再重新计算
+          clearCache(mContext.cacheDir)
+          cacheSize = withContext(Dispatchers.Default) {
+            caleCacheSize()
+          }
+        }
+      }
       SettingsItem("当前版本", value = version, radius = 2)
     }
   }

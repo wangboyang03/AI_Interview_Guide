@@ -31,6 +31,7 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -54,6 +55,7 @@ import cn.itcast.ai_interview_guide.ui.components.NavigationTopBar
 import cn.itcast.ai_interview_guide.ui.theme.BasicColor
 import cn.itcast.ai_interview_guide.utils.UserAuthManager
 import cn.itcast.ai_interview_guide.viewmodels.AudioViewModel
+import kotlinx.coroutines.delay
 import java.io.File
 
 @Composable fun AudioView(navController: NavController, viewModel: AudioViewModel = viewModel()) {
@@ -112,6 +114,13 @@ import java.io.File
   var isPlaying by remember { mutableStateOf(false) }
   var mediaPlayer by remember { mutableStateOf<MediaPlayer?>(null) }
 
+  DisposableEffect(Unit) {
+    onDispose {
+      val mediaPlayer = mediaPlayer ?: return@onDispose
+      mediaPlayer.release()
+    }
+  }
+
   Row(Modifier.fillMaxWidth().clickable {
     if (isPlaying) {
       // 就需要暂停
@@ -154,14 +163,19 @@ import java.io.File
   var currentFilePath by remember { mutableStateOf("") }
   val mContext = LocalContext.current
 
+  var amplitudes by remember { mutableStateOf(List(30) { 10 }) }
+  LaunchedEffect(recording) {
+    amplitudes = List(30) { (10..90).random() }
+    delay(100)
+  }
+
   Column(Modifier.fillMaxWidth().height(240.dp).background(BasicColor.GrayBackground).padding(horizontal = 80.dp, vertical = 20.dp), horizontalAlignment = Alignment.CenterHorizontally) {
     // 音波显示区域
     Box(Modifier.fillMaxWidth().height(100.dp)) {
       if (recording) {
         Row(Modifier.fillMaxSize(), Arrangement.SpaceEvenly, Alignment.CenterVertically) {
-          repeat(30) {
-            val height = (10..80).random()
-            Box(Modifier.width(4.dp).height(height.dp).background(BasicColor.Blue))
+          amplitudes.forEach {
+            Box(Modifier.width(4.dp).height(it.dp).background(BasicColor.Blue))
           }
         }
       }

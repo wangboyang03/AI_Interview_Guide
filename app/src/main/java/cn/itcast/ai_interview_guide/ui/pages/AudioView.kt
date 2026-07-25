@@ -1,6 +1,7 @@
 package cn.itcast.ai_interview_guide.ui.pages
 
 import android.Manifest
+import android.media.MediaPlayer
 import android.media.MediaRecorder
 import android.os.Build
 import android.widget.Toast
@@ -108,9 +109,33 @@ import java.io.File
 }
 
 @Composable fun AudioItemRow(item: AudioDataEntity, onDelete: () -> Unit) {
-  Row(Modifier.fillMaxWidth().padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
+  var isPlaying by remember { mutableStateOf(false) }
+  var mediaPlayer by remember { mutableStateOf<MediaPlayer?>(null) }
+
+  Row(Modifier.fillMaxWidth().clickable {
+    if (isPlaying) {
+      // 就需要暂停
+      val mediaPlayer = mediaPlayer ?: return@clickable
+      mediaPlayer.pause()
+      isPlaying = false
+    } else {
+      // 开始播放
+      if (mediaPlayer == null) {
+        mediaPlayer = MediaPlayer().apply {
+          setDataSource(item.path)
+          prepare()
+          setOnCompletionListener {
+            isPlaying = false  // 播放完成恢复状态
+          }
+        }
+      }
+      val mediaPlayer = mediaPlayer ?: return@clickable
+      mediaPlayer.start()
+      isPlaying = true
+    }
+  }.padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
     Column(Modifier.weight(1f)) {
-      Text(item.name, fontSize = 16.sp, fontWeight = FontWeight.Medium)
+      Text(if (isPlaying) "▶ ${item.name}" else item.name, fontSize = 16.sp, fontWeight = FontWeight.Medium)
       Text("时长: ${item.duration / 1000}秒 | 大小: ${item.size / 1024}KB", fontSize = 12.sp, color = BasicColor.Gray01)
     }
     Text("删除", Modifier.clickable { onDelete() }, Color(0xFFFF0033), fontSize = 14.sp)

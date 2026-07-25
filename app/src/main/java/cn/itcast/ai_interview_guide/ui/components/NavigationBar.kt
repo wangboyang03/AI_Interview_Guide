@@ -127,7 +127,7 @@ import cn.itcast.ai_interview_guide.utils.UserAuthManager
       AudioView(navController)
     }
     composable(RouterMap.PROFILE_EDIT) {
-      ProfileEditView()
+      ProfileEditView(navController)
     }
     composable(RouterMap.SETTINGS) {
       SettingsView(navController)

@@ -37,9 +37,9 @@ fun recursivelyCalculateAllFolders(dir: File): Long {
 fun formatFileSize(size: Long): String {
   return when {
     size < 1024 -> "${size}B"
-    size < 1024 * 1024 -> String.format("%.1fKB", size / 1024)
-    size < 1024 * 1024 -> String.format("%.1fMB", size / (1024 * 1024))
-    else -> String.format("%.1fMB", size / (1024 * 1024 * 1024))
+    size < 1024 * 1024 -> String.format("%.1fKB", size / 1024.0)
+    size < 1024 * 1024 -> String.format("%.1fMB", size / (1024.0 * 1024.0))
+    else -> String.format("%.1fMB", size / (1024.0 * 1024.0 * 1024.0))
   }
 }
 

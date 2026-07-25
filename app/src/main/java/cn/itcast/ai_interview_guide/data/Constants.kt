@@ -27,5 +27,5 @@ object Constants {
   const val QUESTION_OPTIONS_API = "question/opt"
   const val QUESTION_UN_OPTIONS_API = "question/unOpt"
   const val LEARN_TIME_TRACKING_API = "time/tracking"
-
+  const val USER_PROFILE_CHANGE_API = "userInfo/profile"
 }

@@ -1,6 +1,7 @@
 package cn.itcast.ai_interview_guide.data.apis
 
 import cn.itcast.ai_interview_guide.data.Constants
+import cn.itcast.ai_interview_guide.data.models.ChangeProfileRequest
 import cn.itcast.ai_interview_guide.data.models.LearnTimeRequest
 import cn.itcast.ai_interview_guide.data.models.LoginRequest
 import cn.itcast.ai_interview_guide.data.models.LoginResponse
@@ -59,4 +60,9 @@ interface ApiService {
    * 学习信息-统计时长埋点
    */
   @POST(Constants.LEARN_TIME_TRACKING_API) suspend fun postLearnTimeTracking(@Body params: LearnTimeRequest): ResponseData<JsonElement>
+
+  /**
+   * 个人中心-完善用户头像和昵称
+   */
+  @POST(Constants.USER_PROFILE_CHANGE_API) suspend fun ChanedUserProfile(@Body params: ChangeProfileRequest): ResponseData<JsonElement>
 }

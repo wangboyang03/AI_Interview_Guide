@@ -26,3 +26,8 @@ import kotlinx.serialization.Serializable
   val refreshToken: String,
   val token: String
 )
+
+@Serializable data class ChangeProfileRequest(
+  val avatar: String = "",
+  val nickName: String = "用户昵称"
+)

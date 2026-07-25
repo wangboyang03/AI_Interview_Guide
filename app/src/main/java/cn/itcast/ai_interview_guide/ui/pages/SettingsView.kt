@@ -1,6 +1,7 @@
 package cn.itcast.ai_interview_guide.ui.pages
 
 import android.R.attr.radius
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -29,6 +30,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import cn.itcast.ai_interview_guide.ui.components.NavigationTopBar
+import cn.itcast.ai_interview_guide.ui.navigation.RouterMap
 import cn.itcast.ai_interview_guide.ui.theme.BasicColor
 import cn.itcast.ai_interview_guide.utils.clearCache
 import cn.itcast.ai_interview_guide.utils.formatFileSize
@@ -50,7 +52,7 @@ import kotlinx.coroutines.withContext
   }
 
   // 计算缓存大小
-  var cacheSize by remember { mutableStateOf("0") }
+  var cacheSize by remember { mutableStateOf("") }
   val coroutineScope = rememberCoroutineScope()
   fun caleCacheSize(): String {
     val currentSize = recursivelyCalculateAllFolders(mContext.cacheDir)
@@ -72,7 +74,9 @@ import kotlinx.coroutines.withContext
       Spacer(Modifier.height(15.dp))
 
       // 第1组：账号
-      SettingsItem("编辑资料", radius = 1)
+      SettingsItem("编辑资料", radius = 1, onClick = {
+        navController.navigate(RouterMap.PROFILE_EDIT)
+      })
       SettingsItem("账号设置", radius = 2)
 
       Spacer(Modifier.height(15.dp))
@@ -86,6 +90,7 @@ import kotlinx.coroutines.withContext
           cacheSize = withContext(Dispatchers.Default) {
             caleCacheSize()
           }
+          Toast.makeText(mContext, "清理完毕", Toast.LENGTH_LONG).show()
         }
       }
       SettingsItem("当前版本", value = version, radius = 2)

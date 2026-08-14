@@ -1,5 +1,6 @@
 package cn.itcast.ai_interview_guide.views.components
 
+import cn.itcast.ai_interview_guide.views.theme.Colors
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -40,7 +41,7 @@ import cn.itcast.ai_interview_guide.R
     Spacer(Modifier.height(statusBarHeight))
     Row(Modifier.fillMaxWidth().height(64.dp).padding(16.dp, 0.dp), verticalAlignment = Alignment.CenterVertically) {
       // 左边 扫码按钮
-      Image(painterResource(R.drawable.ic_home_scan), null)
+      Image(painterResource(R.drawable.ic_home_scan), null, colorFilter = ColorFilter.tint(Colors.Black))
       Spacer(Modifier.width(10.dp))
       // 中部搜索框
       Row(Modifier.weight(layoutWeightValue).fillMaxWidth().height(boxHeight.dp).clip(CircleShape).clickable { onClick() }.background(backgroundColor), horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {

@@ -1,5 +1,6 @@
 package cn.itcast.ai_interview_guide.views.components
 
+import cn.itcast.ai_interview_guide.views.theme.Colors
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.height

@@ -19,6 +19,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
@@ -51,7 +52,7 @@ import kotlin.time.Duration.Companion.milliseconds
     if (indicator) {
       Row(Modifier.align(Alignment.BottomCenter).padding(bottom = 14.dp), horizontalArrangement = Arrangement.Center) {
         repeat(realCount) { item ->
-          Box(Modifier.size(12.dp, 4.dp).clip(RoundedCornerShape(2.dp)).background(if (currentRealIndex == item) Colors.White else Colors.White.copy(alpha = 0.5f)))
+          Box(Modifier.size(12.dp, 4.dp).clip(RoundedCornerShape(2.dp)).background(if (currentRealIndex == item) Color.White else Color.White.copy(alpha = 0.5f)))
           Spacer(modifier = Modifier.width(4.dp))
         }
       }

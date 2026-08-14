@@ -1,5 +1,6 @@
 package cn.itcast.ai_interview_guide.views.pages
 
+import cn.itcast.ai_interview_guide.views.theme.Colors
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -164,17 +165,17 @@ import kotlinx.coroutines.launch
           searchKeywordList.forEach {
             Row(
               Modifier.padding(end = 16.dp, bottom = 16.dp).clip(RoundedCornerShape(16.dp))
-                .background(Color(0xFFF3F4F5)).padding(12.dp, 8.dp),
+                .background(Colors.GrayBackground).padding(12.dp, 8.dp),
               verticalAlignment = Alignment.CenterVertically
             ) {
-              Text(it, fontSize = 14.sp, color = Color(0xFF6F6F6F))
+              Text(it, fontSize = 14.sp, color = Colors.Gray03)
               if (showDeleteIcon) {
                 Spacer(Modifier.width(8.dp))
                 Icon(Icons.Default.Close, null, Modifier.clickable {
                   coroutineScope.launch {
                     viewModel.deleteCurrentKeyword(it)
                   }
-                }.size(12.dp), Color(0xFF878787))
+                }.size(12.dp), Colors.Gray02)
               }
             }
           }

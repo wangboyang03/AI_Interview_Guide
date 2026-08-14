@@ -1,5 +1,6 @@
 package cn.itcast.ai_interview_guide.views.components
 
+import cn.itcast.ai_interview_guide.views.theme.Colors
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
@@ -39,6 +40,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
@@ -119,7 +121,7 @@ import kotlinx.coroutines.launch
         filterSortType = questionSortType
       }, Alignment.Center) {
         Box(Modifier.fillMaxSize().background(Brush.horizontalGradient(listOf(Color.Transparent, Colors.White), 0f)))
-        Image(painterResource(R.drawable.ic_home_filter), null, Modifier.size(24.dp), contentScale = ContentScale.Fit)
+        Image(painterResource(R.drawable.ic_home_filter), null, Modifier.size(24.dp), colorFilter = ColorFilter.tint(Colors.Black), contentScale = ContentScale.Fit)
       }
 
       if (showBindSheet) {

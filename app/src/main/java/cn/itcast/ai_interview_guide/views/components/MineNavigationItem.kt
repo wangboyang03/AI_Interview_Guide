@@ -1,5 +1,6 @@
 package cn.itcast.ai_interview_guide.views.components
 
+import cn.itcast.ai_interview_guide.views.theme.Colors
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -11,6 +12,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -32,7 +34,7 @@ import cn.itcast.ai_interview_guide.R
       Spacer(Modifier.height(4.dp))
       Row(verticalAlignment = Alignment.CenterVertically) {
         Text(subtitle, fontSize = 12.sp, color = Colors.Gray01)
-        Image(painterResource(R.drawable.ic_arrow_right), null, Modifier.size(12.dp))
+        Image(painterResource(R.drawable.ic_arrow_right), null, Modifier.size(12.dp), colorFilter = ColorFilter.tint(Colors.Gray01))
       }
     }
   }

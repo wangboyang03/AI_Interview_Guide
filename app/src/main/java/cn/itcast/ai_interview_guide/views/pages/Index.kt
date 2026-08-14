@@ -1,5 +1,6 @@
 package cn.itcast.ai_interview_guide.views.pages
 
+import cn.itcast.ai_interview_guide.views.theme.Colors
 import android.R.id.tabs
 import android.annotation.SuppressLint
 import androidx.compose.animation.EnterTransition
@@ -13,6 +14,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
@@ -77,7 +79,7 @@ import cn.itcast.ai_interview_guide.views.routes.RouterMap
           // 3.回来时恢复之前的状态
           restoreState = true
         }
-      }, { Image(painterResource(if (selectedState) response.selectedIcon else response.unselectedIcon), null) }, label = { Text(response.label) })
+      }, { Image(painterResource(if (selectedState) response.selectedIcon else response.unselectedIcon), null, colorFilter = if (selectedState) null else ColorFilter.tint(Colors.Black)) }, label = { Text(response.label) })
     }
   }
 }
